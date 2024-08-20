@@ -5,16 +5,16 @@ import nodium.group.backend.request.DeleteJobRequest;
 import nodium.group.backend.request.JobRequest;
 import nodium.group.backend.request.RegisterRequest;
 import nodium.group.backend.service.interfaces.UserService;
-import nodium.group.backend.response.RegisterResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
 import java.math.BigDecimal;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SpringBootTest
 @TestPropertySource(properties = {
@@ -44,8 +44,9 @@ public class UserServiceTest {
     void testUserCanCreateJobCreated(){
           DeleteJobRequest deleteJobRquest = new DeleteJobRequest("email@email.com",1L);
           userService.deleteJob(deleteJobRquest);
-          assertNull(userService.findAllJobsCreatedByUser("email@email.com"));
+          assertEquals(List.of(),userService.findAllJobsCreatedByUser("email@email.com"));
       }
+
         //todo: test user can post job👍
         // todo: test user can delete job posted
         //todo: test user can book another user service
