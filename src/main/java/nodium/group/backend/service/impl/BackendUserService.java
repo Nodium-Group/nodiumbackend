@@ -95,6 +95,17 @@ public class BackendUserService implements UserService {
         notifyUserAndProvider(cancelRequest);
         return getBookResponse(cancelRequest, order);
     }
+
+    @Override
+    public void deleteJob(DeleteJobRequest deleteJobRquest) {
+        jobService.deleteJob(deleteJobRquest);
+    }
+
+    @Override
+    public List<JobResponse> findAllJobsCreatedByUser(String email) {
+        return jobService.findAllJobs(email);
+    }
+
     @Override
     public List<User> findAllByRole(Role role){
         return userRepository.findAll().stream().filter(user -> user.getRole().contains(role)).toList();

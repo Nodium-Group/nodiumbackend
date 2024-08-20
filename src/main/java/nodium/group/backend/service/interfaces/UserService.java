@@ -13,11 +13,13 @@ import java.util.List;
 
 public interface UserService {
     RegisterResponse registerUser(RegisterRequest request);
-    RegisterResponse updateAddress(UpdateAddressRequest updateRequest);
-    User getUserByEmail(String username);
-    ReviewResponse dropReview(ReviewRequest request);
-    JobResponse postJob(JobRequest jobRequest);
-    List<User> findAllByRole(Role role);
     BookServiceResponse bookService(BookServiceRequest request);
     BookServiceResponse cancelBooking(@Valid CancelRequest cancelRequest);
+    void deleteJob(DeleteJobRequest deleteJobRquest);
+    RegisterResponse updateAddress(UpdateAddressRequest updateRequest);
+    ReviewResponse dropReview(ReviewRequest request);
+    User getUserByEmail(String username);
+    JobResponse postJob(JobRequest jobRequest);
+    List<User> findAllByRole(Role role);
+    List<JobResponse> findAllJobsCreatedByUser(String email);
 }

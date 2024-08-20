@@ -1,6 +1,7 @@
 package nodium.group.backend.serviceTest;
 
 import lombok.extern.slf4j.Slf4j;
+import nodium.group.backend.request.DeleteJobRequest;
 import nodium.group.backend.request.JobRequest;
 import nodium.group.backend.request.RegisterRequest;
 import nodium.group.backend.service.interfaces.UserService;
@@ -13,6 +14,7 @@ import org.springframework.test.context.TestPropertySource;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SpringBootTest
 @TestPropertySource(properties = {
@@ -40,15 +42,17 @@ public class UserServiceTest {
       }
       @Test
     void testUserCanCreateJobCreated(){
-
+          DeleteJobRequest deleteJobRquest = new DeleteJobRequest("email@email.com",1L);
+          userService.deleteJob(deleteJobRquest);
+          assertNull(userService.findAllJobsCreatedByUser("email@email.com"));
       }
-      //todo: test user can post job👍
-    // todo: test user can delete job posted
-    //todo: test user can book another user service
-    // test user can cancel booking
-    // test user can accept booked service
-    // test user can decline booking
-    // test user can update job posted
-    // test firms can post jobs
-    // test user can apply for firm job opporptunities
+        //todo: test user can post job👍
+        // todo: test user can delete job posted
+        //todo: test user can book another user service
+        // test user can cancel booking
+        // test user can accept booked service
+        // test user can decline booking
+        // test user can update job posted
+        // test firms can post jobs
+        // test user can apply for firm job opporptunities
 }

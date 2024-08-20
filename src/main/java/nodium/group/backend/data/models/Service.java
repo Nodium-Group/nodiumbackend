@@ -34,4 +34,5 @@ public class Service {
         private void setTimeStamp(){
                 timeStamp= now();
         }
+        private boolean isDeleted;
 }
