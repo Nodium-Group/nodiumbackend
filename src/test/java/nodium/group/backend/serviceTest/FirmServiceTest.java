@@ -3,7 +3,7 @@ package nodium.group.backend.serviceTest;
 import lombok.extern.slf4j.Slf4j;
 import nodium.group.backend.request.FirmJobRequest;
 import nodium.group.backend.request.FirmRegisterRequest;
-\import nodium.group.backend.request.JobRequest;
+import nodium.group.backend.request.JobRequest;
 import nodium.group.backend.request.UpdateAddressRequest;
 import nodium.group.backend.response.FirmJobResponse;
 import nodium.group.backend.response.FirmRegisterResponse;
