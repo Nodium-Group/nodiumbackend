@@ -48,7 +48,7 @@ public class UserServiceTest {
       }
 
         //todo: test user can post job👍
-        // todo: test user can delete job posted
+        // todo: test user can delete job posted👍
         //todo: test user can book another user service
         // test user can cancel booking
         // test user can accept booked service

@@ -28,7 +28,6 @@ public class BackendNotificationService implements NotificationService {
 
         providersInLocation.forEach(user -> sendNotification(user, jobRequest));
     }
-
     private boolean isProvider(User user) {
         return user.getRole() != null && user.getRole().contains(PROVIDER) &&
                 user.getAddress() != null;
