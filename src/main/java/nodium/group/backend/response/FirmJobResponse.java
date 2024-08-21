@@ -1,12 +1,14 @@
 package nodium.group.backend.response;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Setter
 @Getter
-@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class FirmJobResponse {
     private Long id;
 }

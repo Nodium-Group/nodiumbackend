@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class BackEndFirmService implements FirmService {
+
     @Override
     public FirmRegisterResponse register(FirmRegisterRequest register) {
         return null;

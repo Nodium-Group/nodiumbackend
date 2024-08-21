@@ -5,14 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.File;
-@Setter
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class FirmRegisterRequest {
-    private String firmname;
-    private String decrciption;
-    private String details;
-    private File file;
+    private String firmName;
+    private String description;
+    private UpdateAddressRequest address;
+    private String imageUrl;
 }

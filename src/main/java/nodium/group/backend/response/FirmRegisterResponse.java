@@ -1,15 +1,12 @@
 package nodium.group.backend.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 @Setter
+@Getter
+@ToString
 public class FirmRegisterResponse {
-    private String firmname;
     private Long id;
 }
