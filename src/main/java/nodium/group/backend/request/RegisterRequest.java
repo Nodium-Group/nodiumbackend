@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RegisterRequest {
     @Pattern(regexp ="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
-            message = "Mail not valid for Registeration")
+            message = "Mail not valid for Registration")
     private String email;
     @Pattern(regexp = "^[a-zA-Z0-9][a-zA-Z0-9.,&+/\\-]{7,11}$",
-            message = "Alphanumeric password and sepecial characters is required")
+            message = "Alphanumeric password and special characters is required")
     private String password;
     @Pattern(regexp = "^[a-zA-Z]{2,}")
     private String firstname;

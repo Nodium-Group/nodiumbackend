@@ -63,6 +63,7 @@ public class BackendUserService implements UserService {
     public RegisterResponse updateAddress(UpdateAddressRequest updateRequest) {
         User user = userRepository.findByEmailIgnoreCase(updateRequest.getEmail()).get();
         user.setAddress(modelMapper.map(updateRequest, Address.class));
+        user=userRepository.save(user);
         var addressAdded = modelMapper.map(user.getAddress(), AddressResponse.class);
         return new RegisterResponse(user.getId(),user.getFirstname(),user.getEmail(),addressAdded);
     }
@@ -97,8 +98,8 @@ public class BackendUserService implements UserService {
     }
 
     @Override
-    public void deleteJob(DeleteJobRequest deleteJobRquest) {
-        jobService.deleteJob(deleteJobRquest);
+    public void deleteJob(DeleteJobRequest deleteJobRequest) {
+        jobService.deleteJob(deleteJobRequest);
     }
 
     @Override
@@ -108,6 +109,7 @@ public class BackendUserService implements UserService {
 
     @Override
     public List<User> findAllByRole(Role role){
+
         return userRepository.findAll().stream().filter(user -> user.getRole().contains(role)).toList();
     }
     @Override
@@ -151,7 +153,7 @@ public class BackendUserService implements UserService {
         CustomerOrder order = orderRepository.findById(cancelRequest.getOrderId()).get();
         order.setStatus(OrderStatus.TERMINATED);
         order.setTimeUpdated(now());
-        orderRepository.save(order);
+        order=orderRepository.save(order);
         return order;
     }
     private static BookServiceResponse getBookResponse(CancelRequest cancelRequest, CustomerOrder order) {

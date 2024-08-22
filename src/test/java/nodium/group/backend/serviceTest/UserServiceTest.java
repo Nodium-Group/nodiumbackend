@@ -33,7 +33,7 @@ public class UserServiceTest {
                   "firstname","lastname");
          var registerResponse =  userService.registerUser(request);
          assertNotNull(registerResponse);
-          log.info("Registerresponse --->{}",registerResponse);
+          log.info("RegisterResponse --->{}",registerResponse);
           JobRequest  jobRequest = new JobRequest(registerResponse.getId(),"mainland Lagos","work at home",
                   "basket picking", new BigDecimal("20000"),"REMOTE");
           var jobResponse = userService.postJob(jobRequest);

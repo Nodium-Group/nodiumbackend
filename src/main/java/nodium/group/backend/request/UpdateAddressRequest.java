@@ -9,6 +9,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
+@Builder
 public class UpdateAddressRequest {
     @Pattern(regexp = "//d+")
     private String houseNumber;
