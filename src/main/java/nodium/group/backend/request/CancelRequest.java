@@ -7,7 +7,6 @@ import lombok.Setter;
 
 @Setter
 @Getter
-@Builder
 public class CancelRequest {
     private Long providerId;
     private Long userId;

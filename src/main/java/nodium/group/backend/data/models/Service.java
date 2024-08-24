@@ -1,6 +1,7 @@
 package nodium.group.backend.data.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.Constraint;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,10 +23,9 @@ public class Service {
         private String description;
         private BigDecimal amount;
         private String category;
-        @ManyToOne
+        @ManyToOne(optional = true , cascade = CascadeType.ALL)
         private User provider;
-        @ManyToOne
-        @JoinColumn(name="job_creator")
+        @ManyToOne(optional = true , cascade = CascadeType.ALL)
         private User poster;
         private String location;
         @Setter(NONE)

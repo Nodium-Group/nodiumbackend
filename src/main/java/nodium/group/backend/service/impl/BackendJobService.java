@@ -3,6 +3,7 @@ package nodium.group.backend.service.impl;
 import nodium.group.backend.data.models.Job;
 import nodium.group.backend.data.models.Service;
 import nodium.group.backend.data.repository.JobRepository;
+import nodium.group.backend.data.repository.ServiceRepository;
 import nodium.group.backend.request.DeleteJobRequest;
 import nodium.group.backend.response.JobResponse;
 import nodium.group.backend.service.interfaces.JobService;
@@ -16,7 +17,9 @@ import java.util.stream.Collectors;
 @Component
 public class BackendJobService implements JobService {
     @Autowired
-    private JobRepository repository;
+    private ServiceRepository repository;
+    @Autowired
+    private JobRepository jobRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Override
@@ -25,10 +28,9 @@ public class BackendJobService implements JobService {
     }
 
     @Override
-    public void deleteJob(DeleteJobRequest deleteJobRquest) {
-       var job =  repository.findById(deleteJobRquest.getId());
-       job.get().setDeleted(true);
-       repository.save(job.get());
+    public void deleteJob(DeleteJobRequest deleteJobRequest) {
+       var job =  jobRepository.findById(deleteJobRequest.getId()).get();
+       jobRepository.delete(job);
     }
 
     @Override
