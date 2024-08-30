@@ -1,4 +1,4 @@
-package nodium.group.backend.dtos.out;
+package nodium.group.backend.dto.out;
 
 import lombok.*;
 

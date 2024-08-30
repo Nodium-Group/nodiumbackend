@@ -1,13 +1,10 @@
-package nodium.group.backend.dtos.out;
+package nodium.group.backend.dto.out;
 
-import jakarta.persistence.ManyToOne;
 import lombok.*;
 import nodium.group.backend.data.models.User;
 import org.springframework.context.annotation.Lazy;
 
 import java.time.LocalDateTime;
-
-import static lombok.AccessLevel.NONE;
 
 @AllArgsConstructor
 @NoArgsConstructor

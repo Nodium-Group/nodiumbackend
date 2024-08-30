@@ -1,5 +1,6 @@
 package nodium.group.backend.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,5 +16,9 @@ public class Configurations {
     @Bean
     public PasswordEncoder passwowrdEncoder(){
         return new BCryptPasswordEncoder();
+    }
+    @Bean
+    public ObjectMapper objectMapper(){
+        return new ObjectMapper();
     }
 }

@@ -1,11 +1,11 @@
 package nodium.group.backend.serviceTest;
 
 import lombok.extern.slf4j.Slf4j;
-import nodium.group.backend.dtos.request.BookServiceRequest;
-import nodium.group.backend.dtos.request.CancelRequest;
-import nodium.group.backend.dtos.request.JobRequest;
-import nodium.group.backend.dtos.request.RegisterRequest;
-import nodium.group.backend.dtos.out.BookServiceResponse;
+import nodium.group.backend.dto.request.BookServiceRequest;
+import nodium.group.backend.dto.request.CancelRequest;
+import nodium.group.backend.dto.request.JobRequest;
+import nodium.group.backend.dto.request.RegisterRequest;
+import nodium.group.backend.dto.out.BookServiceResponse;
 import nodium.group.backend.service.interfaces.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

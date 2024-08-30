@@ -3,8 +3,8 @@ package nodium.group.backend.service.interfaces;
 import jakarta.validation.Valid;
 import nodium.group.backend.data.enums.Role;
 import nodium.group.backend.data.models.User;
-import nodium.group.backend.dtos.request.*;
-import nodium.group.backend.dtos.out.*;
+import nodium.group.backend.dto.request.*;
+import nodium.group.backend.dto.out.*;
 
 import java.util.List;
 

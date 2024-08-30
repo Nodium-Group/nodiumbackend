@@ -1,7 +1,7 @@
 package nodium.group.backend.web;
 
-import nodium.group.backend.dtos.out.ApiResponse;
-import nodium.group.backend.dtos.request.RegisterRequest;
+import nodium.group.backend.dto.out.ApiResponse;
+import nodium.group.backend.dto.request.RegisterRequest;
 import nodium.group.backend.service.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

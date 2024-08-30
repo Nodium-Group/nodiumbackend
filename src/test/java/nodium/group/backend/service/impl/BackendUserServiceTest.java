@@ -4,7 +4,7 @@ import nodium.group.backend.data.enums.Role;
 import nodium.group.backend.data.repository.JobRepository;
 import nodium.group.backend.data.repository.ServiceRepository;
 import nodium.group.backend.data.repository.UserRepository;
-import nodium.group.backend.dtos.request.*;
+import nodium.group.backend.dto.request.*;
 import nodium.group.backend.service.interfaces.JobService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

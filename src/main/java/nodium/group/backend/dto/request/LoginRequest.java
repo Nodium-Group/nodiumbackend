@@ -1,14 +1,15 @@
-package nodium.group.backend.dtos.out;
+package nodium.group.backend.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class FirmJobResponse {
-    private Long id;
+@Setter
+@Getter
+public class LoginRequest {
+    private String email;
+    private String password;
 }

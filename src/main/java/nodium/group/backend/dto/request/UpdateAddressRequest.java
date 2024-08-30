@@ -1,4 +1,4 @@
-package nodium.group.backend.dtos.request;
+package nodium.group.backend.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
