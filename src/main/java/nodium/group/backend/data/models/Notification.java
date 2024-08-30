@@ -21,7 +21,7 @@ public class Notification {
     private Long id;
     private String purpose;
     private String description;
-    @OneToOne
+    @ManyToOne
     private User user;
     @Setter(NONE)
     private LocalDateTime timeStamp;

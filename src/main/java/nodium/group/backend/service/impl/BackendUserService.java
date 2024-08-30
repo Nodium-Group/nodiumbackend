@@ -92,8 +92,18 @@ public class BackendUserService implements UserService {
     }
     @Override
     public BookServiceResponse cancelBooking(@Valid CancelRequest cancelRequest) {
-
-        return null;
+        CustomerOrder order = orderRepository.findById(cancelRequest.getOrderId()).get();
+        order.setTimeUpdated(now());
+        order.setStatus(OrderStatus.TERMINATED);
+        order =orderRepository.save(order);
+        notifyUserAndProvider(order,cancelRequest.getReason());
+        return new BookServiceResponse(cancelRequest.getReason(),order.getId(),
+                order.getStatus(),order.getTimeStamp(), order.getProvider().getId(),
+                order.getCustomer().getId(),order.getTimeUpdated());
+    }
+    private void notifyUserAndProvider(CustomerOrder order,String reason){
+        notifyUser(order.getCustomer().getId(),reason,"Canceled Booking");
+        notifyUser(order.getProvider().getId(),"Canceled Booking","Booking  was TERMINATED");
     }
 
     @Override
@@ -154,31 +164,30 @@ public class BackendUserService implements UserService {
         Notification notification= notifyProvider(request.getUserId(),
                                    request.getOrderDescription(), OrderStatus.PENDING);
         notificationRepository.save(notification);
-        notifyUser(request.getId(),request.getOrderDescription());
-
+        notifyUser(request.getId(),request.getOrderDescription(),"You Booked a Service");
 
     }
     private void validateMail(String email){
         if(userRepository.findByEmailIgnoreCase(email).isPresent())
             throw new DataIntegrityViolationException(EMAIL_ALREADY_EXIST.getMessage());
     }
-    private void notifyUser(Long userId,String description){
-        var notification = new Notification(null,"You booked a service",description,
+    private void notifyUser(Long userId,String description,String purpose){
+        var notification = new Notification(null,purpose,description,
                 userRepository.findById(userId).get(),now(),false);
         notificationRepository.save(notification);
     }
-    private CustomerOrder getCustomerOrder(CancelRequest cancelRequest) {
-        CustomerOrder order = orderRepository.findById(cancelRequest.getOrderId()).get();
-        order.setStatus(OrderStatus.TERMINATED);
-        order.setTimeUpdated(now());
-        order=orderRepository.save(order);
-        return order;
-    }
-    private static BookServiceResponse getBookResponse(CancelRequest cancelRequest, CustomerOrder order) {
-        return BookServiceResponse.builder().customerId(cancelRequest.getUserId())
-//                .timeUpdated(order.getTimeUpdated()).providerId(cancelRequest.getProviderId())
-                .orderId(order.getId()).status(order.getStatus()).build();
-    }
+//    private CustomerOrder getCustomerOrder(CancelRequest cancelRequest) {
+//        CustomerOrder order = orderRepository.findById(cancelRequest.getOrderId()).get();
+//        order.setStatus(OrderStatus.TERMINATED);
+//        order.setTimeUpdated(now());
+//        order=orderRepository.save(order);
+//        return order;
+//    }
+//    private static BookServiceResponse getBookResponse(CancelRequest cancelRequest, CustomerOrder order) {
+//        return BookServiceResponse.builder().customerId(cancelRequest.getUserId())
+////                .timeUpdated(order.getTimeUpdated()).providerId(cancelRequest.getProviderId())
+//                .orderId(order.getId()).status(order.getStatus()).build();
+//    }
 //    private Notification createNotification(BookServiceRequest bookRequest){
 //        return Notification.builder()
 //                .user(userRepository.findById(bookRequest.()).get())
