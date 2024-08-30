@@ -30,7 +30,6 @@ public class BackendAuthProvider implements AuthenticationProvider {
             return new UsernamePasswordAuthenticationToken(null,null,userDetails.getAuthorities());
         throw new BadCredentialsException(INVALID_DETAILS_PROVIDED.getMessage());
     }
-
     @Override
     public boolean supports(Class<?> authentication) {
         return authentication.equals(UsernamePasswordAuthenticationToken.class);
