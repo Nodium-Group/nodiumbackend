@@ -1,14 +1,14 @@
-package nodium.group.backend.response;
+package nodium.group.backend.dtos.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class FirmJobResponse {
-    private Long id;
+@Getter
+@Setter
+public class FirmRegisterResponse {
+    private String firmname;
 }

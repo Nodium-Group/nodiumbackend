@@ -1,4 +1,4 @@
-package nodium.group.backend.response;
+package nodium.group.backend.dtos.out;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 public class BookServiceResponse {
-    private String bookingMessage;
+    private String orderDescription;
     private Long orderId;
     private OrderStatus status;
     @JsonSerialize(using = LocalDateTimeSerializer.class)

@@ -5,7 +5,7 @@ import nodium.group.backend.data.models.Notification;
 import nodium.group.backend.data.models.User;
 import nodium.group.backend.data.repository.NotificationRepository;
 import nodium.group.backend.data.repository.UserRepository;
-import nodium.group.backend.request.JobRequest;
+import nodium.group.backend.dtos.request.JobRequest;
 import nodium.group.backend.service.interfaces.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

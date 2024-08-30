@@ -25,6 +25,7 @@ public class Notification {
     private User user;
     @Setter(NONE)
     private LocalDateTime timeStamp;
+    private boolean isSeen;
     @PrePersist
     private void setTimeStamp(){
         timeStamp= now();

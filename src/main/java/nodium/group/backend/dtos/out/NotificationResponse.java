@@ -1,4 +1,4 @@
-package nodium.group.backend.response;
+package nodium.group.backend.dtos.out;
 
 import lombok.*;
 
@@ -7,6 +7,7 @@ import lombok.*;
 @Setter
 @Getter
 @ToString
-public class FirmRegisterResponse {
+public class NotificationResponse {
+    private String description;
     private Long id;
 }

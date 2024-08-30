@@ -1,28 +1,24 @@
 package nodium.group.backend.serviceTest;
 
 import lombok.extern.slf4j.Slf4j;
-import nodium.group.backend.request.DeleteJobRequest;
-import nodium.group.backend.request.JobRequest;
-import nodium.group.backend.request.RegisterRequest;
+import nodium.group.backend.dtos.request.BookServiceRequest;
+import nodium.group.backend.dtos.request.CancelRequest;
+import nodium.group.backend.dtos.request.JobRequest;
+import nodium.group.backend.dtos.request.RegisterRequest;
+import nodium.group.backend.dtos.out.BookServiceResponse;
 import nodium.group.backend.service.interfaces.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
-@TestPropertySource(properties = {
-        "DATABASE_URL=jdbc:postgresql://localhost:5432/nodiumgroup",
-        "DATABASE_USERNAME=postgres",
-        "DATABASE_PASSWORD=password"
-})
-
 @Slf4j
 public class UserServiceTest {
      @Autowired
@@ -41,15 +37,39 @@ public class UserServiceTest {
           log.info("JobResponse --->{}",jobResponse);
       }
       @Test
-    void testUserCanCreateJobCreated(){
-          DeleteJobRequest deleteJobRquest = new DeleteJobRequest("email@email.com",1L);
-          userService.deleteJob(deleteJobRquest);
-          assertEquals(List.of(),userService.findAllJobsCreatedByUser("email@email.com"));
+      @Sql(scripts = {"/db/data.Users.sql"})
+      void testUserCanBookAProviderJob(){
+          BookServiceRequest bookServiceRequest = new BookServiceRequest(5L,"job",12L,
+                  LocalDateTime.now(),new BigDecimal("200"));
+          BookServiceResponse bookServiceResponse = userService.bookService(bookServiceRequest);
+          assertNotNull(bookServiceResponse);
+          log.info("BookService Response--> {}",bookServiceResponse);
       }
-
-        //todo: test user can post job👍
-        // todo: test user can delete job posted👍
-        //todo: test user can book another user service
+        @Test
+        @Sql(scripts = {"/db/data.Users.sql"})
+        void testUserAndProviderRecieveNotificactionWhenServiceIsBooked(){
+            assertEquals(0,userService.getUserNotifications(5L).size());
+            assertEquals(0,userService.getUserNotifications(12L).size());
+            BookServiceRequest bookServiceRequest = new BookServiceRequest(5L,"job",12L, LocalDateTime.now(),new BigDecimal("200"));
+            BookServiceResponse bookServiceResponse = userService.bookService(bookServiceRequest);
+            assertNotNull(bookServiceResponse);
+            log.info("BookService Response--> {}",bookServiceResponse);
+            assertEquals(1,userService.getUserNotifications(5L).size());
+            assertEquals(1,userService.getUserNotifications(12L).size());
+          }
+        @Test
+        @Sql(scripts = {"/db/data.Users.sql"})
+        void testUserCanCancelBookings(){
+            BookServiceRequest bookServiceRequest = new BookServiceRequest(5L,"job",12L, LocalDateTime.now(),new BigDecimal("200"));
+            BookServiceResponse response = userService.bookService(bookServiceRequest);
+            assertEquals(1,userService.getUserNotifications(5L).size());
+            assertEquals(1,userService.getUserNotifications(12L).size());
+            CancelRequest cancelRequest = new CancelRequest(response.getCustomerId(),
+                                             response.getOrderId(),"not interested");
+            BookServiceResponse cancelResponse = userService.cancelBooking(cancelRequest);
+            assertNotNull(cancelResponse);
+            log.info("CANCELRESPONSE -----> {}",cancelResponse);
+        }
         // test user can cancel booking
         // test user can accept booked service
         // test user can decline booking
@@ -57,3 +77,9 @@ public class UserServiceTest {
         // test firms can post jobs
         // test user can apply for firm job opporptunities
 }
+
+
+//todo: test user can post job👍
+// todo: test user can delete job posted👍
+//todo: test user can book another user service
+

@@ -1,16 +1,14 @@
-package nodium.group.backend.request;
+package nodium.group.backend.dtos.request;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CancelRequest {
-    private Long providerId;
     private Long userId;
     private Long orderId;
-    @NotBlank
     private String reason;
 }

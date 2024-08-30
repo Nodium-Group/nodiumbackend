@@ -1,4 +1,4 @@
-package nodium.group.backend.request;
+package nodium.group.backend.dtos.out;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,6 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeleteJobRequest {
-    private String email;
+public class FirmJobResponse {
     private Long id;
 }

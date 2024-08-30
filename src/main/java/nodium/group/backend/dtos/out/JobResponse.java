@@ -1,4 +1,4 @@
-package nodium.group.backend.response;
+package nodium.group.backend.dtos.out;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

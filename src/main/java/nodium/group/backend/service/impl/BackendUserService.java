@@ -6,14 +6,14 @@ import nodium.group.backend.data.enums.Role;
 import nodium.group.backend.data.models.*;
 import nodium.group.backend.data.repository.NotificationRepository;
 import nodium.group.backend.data.repository.OrderRepository;
+import nodium.group.backend.dtos.request.*;
+import nodium.group.backend.dtos.out.*;
 import nodium.group.backend.exception.BackEndException;
 import nodium.group.backend.data.repository.ReviewRepository;
-import nodium.group.backend.response.*;
 import nodium.group.backend.service.interfaces.JobService;
 import nodium.group.backend.service.interfaces.NotificationService;
 import nodium.group.backend.service.interfaces.UserService;
 import nodium.group.backend.data.repository.UserRepository;
-import nodium.group.backend.request.*;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,9 +92,8 @@ public class BackendUserService implements UserService {
     }
     @Override
     public BookServiceResponse cancelBooking(@Valid CancelRequest cancelRequest) {
-        CustomerOrder order = getCustomerOrder(cancelRequest);
-        notifyUserAndProvider(cancelRequest);
-        return getBookResponse(cancelRequest, order);
+
+        return null;
     }
 
     @Override
@@ -108,6 +107,13 @@ public class BackendUserService implements UserService {
     }
 
     @Override
+    public List<NotificationResponse> getUserNotifications(Long userId) {
+        return notificationRepository.findByUser(userRepository.findById(userId).get()).stream()
+                .map(notification -> modelMapper.map(notification,NotificationResponse.class))
+                .toList();
+    }
+
+    @Override
     public List<User> findAllByRole(Role role){
 
         return userRepository.findAll().stream().filter(user -> user.getRole().contains(role)).toList();
@@ -116,16 +122,15 @@ public class BackendUserService implements UserService {
     public BookServiceResponse bookService(@Valid BookServiceRequest bookRequest) {
         CustomerOrder customerOrder = buildOrder(bookRequest);
         customerOrder = orderRepository.save(customerOrder);
-        Notification notification = createNotification(bookRequest);
-        notificationRepository.save(notification);
+        notifyUserAndProvider(bookRequest);
         return BookServiceResponse.builder().orderId(customerOrder.getId())
                 .providerId(customerOrder.getProvider().getId()).customerId(bookRequest.getId())
                 .status(customerOrder.getStatus()).timeStamp(customerOrder.getTimeStamp())
-                .bookingMessage(bookRequest.getOrderDescription()).build();
+                .orderDescription(bookRequest.getOrderDescription()).build();
     }
-    private Notification notifyUser(Long userId, String description) {
+    private Notification notifyProvider(Long userId, String description, OrderStatus status) {
         return Notification.builder()
-                .purpose("Order was "+ OrderStatus.TERMINATED.name())
+                .purpose(String.format("You have a %s Order ",status))
                 .user(userRepository.findById(userId).get())
                 .description(description)
                 .build();
@@ -134,20 +139,33 @@ public class BackendUserService implements UserService {
         return CustomerOrder.builder()
                 .status(OrderStatus.PENDING)
                 .customer(userRepository.findById(bookRequest.getId()).get())
-                .provider(userRepository.findById(bookRequest.getServiceId()).get())
+                .provider(userRepository.findById(bookRequest.getUserId()).get())
                 .build();
     }
-    private void notifyUserAndProvider(CancelRequest cancelRequest) {
-        Notification notification= notifyUser(cancelRequest.getUserId(), cancelRequest.getReason());
+//    private void notifyUserAndProvider(CancelRequest cancelRequest,OrderStatus status) {
+//        Notification notification= notifyUser(cancelRequest.getUserId(), cancelRequest.getReason(),status);
+//        notificationRepository.save(notification);
+//        notification = notifyUser(userRepository.
+//                        findById(cancelRequest.getProviderId()).get().getId(),
+//                cancelRequest.getReason());
+//        notificationRepository.save(notification);
+//    }
+    private void notifyUserAndProvider(BookServiceRequest request){
+        Notification notification= notifyProvider(request.getUserId(),
+                                   request.getOrderDescription(), OrderStatus.PENDING);
         notificationRepository.save(notification);
-        notification = notifyUser(userRepository.
-                        findById(cancelRequest.getProviderId()).get().getId(),
-                cancelRequest.getReason());
-        notificationRepository.save(notification);
+        notifyUser(request.getId(),request.getOrderDescription());
+
+
     }
     private void validateMail(String email){
         if(userRepository.findByEmailIgnoreCase(email).isPresent())
             throw new DataIntegrityViolationException(EMAIL_ALREADY_EXIST.getMessage());
+    }
+    private void notifyUser(Long userId,String description){
+        var notification = new Notification(null,"You booked a service",description,
+                userRepository.findById(userId).get(),now(),false);
+        notificationRepository.save(notification);
     }
     private CustomerOrder getCustomerOrder(CancelRequest cancelRequest) {
         CustomerOrder order = orderRepository.findById(cancelRequest.getOrderId()).get();
@@ -158,16 +176,16 @@ public class BackendUserService implements UserService {
     }
     private static BookServiceResponse getBookResponse(CancelRequest cancelRequest, CustomerOrder order) {
         return BookServiceResponse.builder().customerId(cancelRequest.getUserId())
-                .timeUpdated(order.getTimeUpdated()).providerId(cancelRequest.getProviderId())
+//                .timeUpdated(order.getTimeUpdated()).providerId(cancelRequest.getProviderId())
                 .orderId(order.getId()).status(order.getStatus()).build();
     }
-    private Notification createNotification(BookServiceRequest bookRequest){
-        return Notification.builder()
-                .user(userRepository.findById(bookRequest.getServiceId()).get())
-                .description(bookRequest.getOrderDescription())
-                .purpose("Service Booking")
-                .build();
-    }
+//    private Notification createNotification(BookServiceRequest bookRequest){
+//        return Notification.builder()
+//                .user(userRepository.findById(bookRequest.()).get())
+//                .description(bookRequest.getOrderDescription())
+//                .purpose("Service Booking")
+//                .build();
+//    }
     private final ReviewRepository reviewRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;

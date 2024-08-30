@@ -1,4 +1,4 @@
-package nodium.group.backend.response;
+package nodium.group.backend.dtos.out;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
