@@ -3,6 +3,7 @@ package nodium.group.backend.handler;
 import nodium.group.backend.exception.BackEndException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -12,9 +13,16 @@ import java.util.Map;
 import static nodium.group.backend.exception.ExceptionMessages.INVALID_DETAILS;
 import static nodium.group.backend.exception.ExceptionMessages.SOMETHING_WENT_WRONG;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @RestControllerAdvice
 public class BackendHandler {
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseBody
+    public ResponseEntity<?> BadCredentialsException(BadCredentialsException exception){
+        return ResponseEntity.status(UNAUTHORIZED)
+                .body(Map.of("Error",exception.getMessage(),"success",false));
+    }
     @ExceptionHandler(BackEndException.class)
     @ResponseBody
     public ResponseEntity<?> handleEventException(BackEndException exception){
