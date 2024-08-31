@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/api/v1/Users/")
+@RequestMapping("/api/v1/nodium/Users/")
 public class UserController {
     @Autowired
     private UserService userService;
-    @PostMapping("Register/user")
+    @PostMapping("Register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request){
         return ResponseEntity.status(200).body(
                 new ApiResponse(true,userService.registerUser(request), LocalDateTime.now()));

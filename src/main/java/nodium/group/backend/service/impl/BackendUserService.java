@@ -65,7 +65,7 @@ public class BackendUserService implements UserService {
         user.setAddress(modelMapper.map(updateRequest, Address.class));
         user=userRepository.save(user);
         var addressAdded = modelMapper.map(user.getAddress(), AddressResponse.class);
-        return new RegisterResponse(user.getId(),user.getFirstname(),user.getEmail(),addressAdded);
+        return new RegisterResponse(user.getId(),user.getFirstname(),user.getLastname(),user.getEmail(),addressAdded);
     }
     @Override
     public User getUserByEmail(String username) {

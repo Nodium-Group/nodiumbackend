@@ -10,8 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthoritiesContainer;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -21,7 +19,6 @@ import java.io.IOException;
 import java.util.List;
 
 import static nodium.group.backend.exception.ExceptionMessages.RE_LOGIN;
-import static nodium.group.backend.exception.ExceptionMessages.SOMETHING_WENT_WRONG;
 import static nodium.group.backend.utils.AppUtils.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -31,18 +28,18 @@ public class AuthourizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String requestPath = request.getServletPath();
-            if (LOGIN.contains(requestPath)) {filterChain.doFilter(request, response);return;}
+            if (LOGIN_URL.contains(requestPath)) {filterChain.doFilter(request, response);return;}
             String authorization = request.getHeader(AUTHORIZATION);
-            if (authorization != null) {
+            if (authorization != null && authorization.startsWith(BEARER)) {
                 extractAndSetToken(authorization);
             }
             filterChain.doFilter(request, response);
         }
         catch(Exception exception){
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            SecurityContextHolder.clearContext();
             response.getOutputStream().write(RE_LOGIN.getMessage().getBytes());
-            response.flushBuffer();
-        }
+            response.flushBuffer();        }
     }
 
     private static void extractAndSetToken(String authorization) {

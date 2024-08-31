@@ -20,7 +20,7 @@ public class BackendHandler {
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseBody
     public ResponseEntity<?> BadCredentialsException(BadCredentialsException exception){
-        return ResponseEntity.status(UNAUTHORIZED)
+        return ResponseEntity.status(BAD_REQUEST)
                 .body(Map.of("Error",exception.getMessage(),"success",false));
     }
     @ExceptionHandler(BackEndException.class)
