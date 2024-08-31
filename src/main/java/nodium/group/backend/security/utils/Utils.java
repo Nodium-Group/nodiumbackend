@@ -10,11 +10,10 @@ import static nodium.group.backend.utils.AppUtils.*;
 
 public class Utils {
     public static String generateToken(List<String> stringList){
-        String token = JWT.create()
+        return JWT.create()
                 .withExpiresAt(Instant.now().plusSeconds(60*60*72))
                 .withClaim(ROLES, stringList)
                 .withIssuer(APP_NAME)
                 .sign(Algorithm.HMAC512(SECRET.getBytes()));
-        return null;
     }
 }
