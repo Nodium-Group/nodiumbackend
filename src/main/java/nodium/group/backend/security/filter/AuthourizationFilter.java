@@ -26,7 +26,6 @@ public class AuthourizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         Integer number = 0;
-
         try {
             String requestPath = request.getServletPath();
             if (PUBLIC_URLS.contains(requestPath)) {
@@ -36,17 +35,11 @@ public class AuthourizationFilter extends OncePerRequestFilter {
             String authorization = request.getHeader(AUTHORIZATION);
             if (authorization != null && authorization.startsWith(BEARER)) {
                 extractAndSetToken(authorization,request,number);
-                filterChain.doFilter(request, response);
-            }
-        }
-        catch(Exception exception){
+                filterChain.doFilter(request, response);}}
+            catch(Exception exception){
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             SecurityContextHolder.clearContext();
             response.getOutputStream().write(Arrays.toString(exception.getStackTrace()).getBytes());
-            response.flushBuffer();
-        }
+            response.flushBuffer();}
     }
-
-
-
 }

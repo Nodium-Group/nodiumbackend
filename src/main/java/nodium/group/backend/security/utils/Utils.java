@@ -22,11 +22,11 @@ public class Utils {
                 .withExpiresAt(Instant.now().plusSeconds(60*60*24*3))
                 .withClaim(ROLES, stringList)
                 .withIssuer(APP_NAME)
-                .sign(Algorithm.HMAC512(SECRET));
+                .sign(Algorithm.HMAC256(SECRET.getBytes()));
     }
     public static JWTVerifier buildVerifier() {
         return JWT
-                .require(Algorithm.HMAC512(SECRET))
+                .require(Algorithm.HMAC512(SECRET.getBytes()))
                 .withClaimPresence(ROLES)
                 .withIssuer(APP_NAME)
                 .build();
