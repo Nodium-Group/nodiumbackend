@@ -14,6 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
+import static nodium.group.backend.data.enums.Role.PROVIDER;
 import static nodium.group.backend.data.enums.Role.USER;
 import static nodium.group.backend.utils.AppUtils.*;
 import static org.springframework.http.HttpMethod.POST;
@@ -29,12 +30,12 @@ public class SecurityConfigs {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
+                .cors(AbstractHttpConfigurer::disable)
                 .addFilterAt(new AuthenticationFilter(), BasicAuthenticationFilter.class)
                 .addFilterBefore(authourizationFilter, AuthenticationFilter.class)
                 .sessionManagement(state->state.sessionCreationPolicy(STATELESS))
-                .authorizeHttpRequests(c->c.requestMatchers(POST,PUBLIC_URLS).permitAll())
-                .authorizeHttpRequests(c->c.requestMatchers(USER_END_POINTS).hasAuthority(USER.name()))
+                .authorizeHttpRequests(c->c.requestMatchers(POST,PUBLIC_END_POINTS).permitAll()
+                        .requestMatchers(POST,USER_END_POINTS).hasAuthority(USER.name()))
                 .build();
     }
     @Bean

@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 
 import static java.time.LocalDateTime.now;
@@ -51,7 +52,8 @@ public class BackendUserService implements UserService {
             validateMail(registerRequest.getEmail());
             User user = modelMapper.map(registerRequest, User.class);
             user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-            user.getRole().add(USER);
+            user.setRole(USER);
+//            user.getRole().add(USER);
             user = userRepository.save(user);
             return modelMapper.map(user, RegisterResponse.class);
         }
@@ -125,8 +127,7 @@ public class BackendUserService implements UserService {
 
     @Override
     public List<User> findAllByRole(Role role){
-
-        return userRepository.findAll().stream().filter(user -> user.getRole().contains(role)).toList();
+        return userRepository.findAll().stream().filter(user -> user.getRole().name().equals(role.name())).toList();
     }
     @Override
     public BookServiceResponse bookService(@Valid BookServiceRequest bookRequest) {

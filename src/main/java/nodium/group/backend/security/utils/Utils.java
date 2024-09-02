@@ -1,7 +1,15 @@
 package nodium.group.backend.security.utils;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.Instant;
 import java.util.List;
@@ -11,9 +19,24 @@ import static nodium.group.backend.utils.AppUtils.*;
 public class Utils {
     public static String generateToken(List<String> stringList){
         return JWT.create()
-                .withExpiresAt(Instant.now().plusSeconds(60*60*72))
+                .withExpiresAt(Instant.now().plusSeconds(60*60*24*3))
                 .withClaim(ROLES, stringList)
                 .withIssuer(APP_NAME)
-                .sign(Algorithm.HMAC512(SECRET.getBytes()));
+                .sign(Algorithm.HMAC512(SECRET));
+    }
+    public static JWTVerifier buildVerifier() {
+        return JWT
+                .require(Algorithm.HMAC512(SECRET))
+                .withClaimPresence(ROLES)
+                .withIssuer(APP_NAME)
+                .build();
+    }
+    public static void  extractAndSetToken(String authorization, HttpServletRequest request, Integer number) throws Exception{
+        JWTVerifier verifier = buildVerifier();
+        String token = authorization.substring(BEARER.length()).strip();
+        DecodedJWT decodedJWT = verifier.verify(token);
+        List< ? extends GrantedAuthority> authorities = decodedJWT.getClaim(ROLES).asList(SimpleGrantedAuthority.class);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(null, null, authorities);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }
