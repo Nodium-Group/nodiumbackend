@@ -17,7 +17,8 @@ public class AppUtils {
     public static String SECRET = "Our Application name is Nodium Backend";
     public static List<String> PUBLIC_URLS = List.of(REGISTER_URL,LOGIN_URL);
     public static String[] USER_END_POINTS = {"/api/v1/nodium/Users/post-jobs"};
-    public static String[] PUBLIC_END_POINTS = {REGISTER_URL,LOGIN_URL};
+    public static String[] PUBLIC_END_POINTS = {REGISTER_URL,LOGIN_URL,
+    "/api/v1/providers/register"};
     public static void validateRegisterRequest(RegisterRequest request){
         validate(request.getEmail());
         validate(request.getPassword());

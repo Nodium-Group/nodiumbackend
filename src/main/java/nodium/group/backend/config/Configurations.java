@@ -2,8 +2,6 @@ package nodium.group.backend.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import nodium.group.backend.security.filter.AuthenticationFilter;
-import nodium.group.backend.security.manager.BackendAuthManager;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

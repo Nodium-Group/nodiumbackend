@@ -25,7 +25,9 @@ public class UserController {
     @PostMapping("Register")
     public ResponseEntity<?> register(@RequestBody @Valid RegisterRequest request){
         return ResponseEntity.status(CREATED).body(
-                new ApiResponse(true,userService.registerUser(request), now()));
+                new ApiResponse(true,
+                        userService.registerUser(request),
+                        now()));
     }
     @PostMapping("post-jobs")
     public ResponseEntity<?> postJobs(@RequestBody JobRequest request) {

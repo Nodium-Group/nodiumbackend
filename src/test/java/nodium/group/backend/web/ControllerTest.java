@@ -16,7 +16,6 @@ import java.math.BigDecimal;
 
 import static nodium.group.backend.utils.AppUtils.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -31,10 +30,9 @@ public class ControllerTest {
     private ObjectMapper objectMapper;
     @Test
     @Sql({"/db/truncate.sql"})
-    @WithMockUser(roles ="USER")
     void testUserCannotRegisiterWithInvalidDetails()throws Exception{
         mockMvc.perform(post("/api/v1/nodium/Users/Register")
-                .contentType(APPLICATION_JSON)
+                .contentType(APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(new RegisterRequest())))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
@@ -43,7 +41,7 @@ public class ControllerTest {
     @Sql({"/db/truncate.sql"})
     void testUserCanRegisterWithValidDetails()throws Exception{
         mockMvc.perform(post(REGISTER_URL)
-                        .contentType(APPLICATION_JSON)
+                        .contentType(APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new RegisterRequest("email@email.com",
                                 "Password","first","last"))))
                 .andExpect(status().is2xxSuccessful())
@@ -59,7 +57,7 @@ public class ControllerTest {
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print());
         mockMvc.perform(post(LOGIN_URL)
-                        .contentType(APPLICATION_JSON)
+                        .contentType(APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new LoginRequest("email@email.com","Password"))))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print());
@@ -68,14 +66,14 @@ public class ControllerTest {
     @Sql({"/db/truncate.sql"})
     void testUserCanPostJobs() throws Exception{
        var result =  mockMvc.perform(post("/api/v1/nodium/Users/Register")
-                        .contentType(APPLICATION_JSON)
+                        .contentType(APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new RegisterRequest("email@email.com",
                                 "Password","first","last"))))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print())
                 .andReturn();
        result = mockMvc.perform(post("/api/v1/nodium/login")
-                        .contentType(APPLICATION_JSON)
+                        .contentType(APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new LoginRequest(
                                 "email@email.com","Password"))))
                 .andExpect(status().is2xxSuccessful())
@@ -86,13 +84,22 @@ public class ControllerTest {
         System.out.println("token = " + token);
         mockMvc.perform(post("/api/v1/nodium/Users/post-jobs")
                         .header(AUTHORIZATION, AUTH_HEADER_PREFIX +token)
-                        .contentType(APPLICATION_JSON)
+                        .contentType(APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new JobRequest(1L, "location",
                                 "description","name",new BigDecimal("9000"),
                                 "REMOTE"))))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
+    }
+    @Test
+    void testProvidersCanRegister()throws Exception{
+        mockMvc.perform(post("/api/v1/providers/register")
+                .content(objectMapper.writeValueAsString(new RegisterRequest(
+                        "email@email.com","password","firstname","lastname")))
+                .contentType(APPLICATION_JSON_VALUE))
+                .andExpect(status().isCreated())
+                .andDo(print());
     }
 
 }
