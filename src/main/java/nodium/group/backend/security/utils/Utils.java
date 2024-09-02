@@ -31,12 +31,12 @@ public class Utils {
                 .withIssuer(APP_NAME)
                 .build();
     }
-    public static void  extractAndSetToken(String authorization, HttpServletRequest request, Integer number) throws Exception{
-        JWTVerifier verifier = buildVerifier();
-        String token = authorization.substring(BEARER.length()).strip();
-        DecodedJWT decodedJWT = verifier.verify(token);
-        List< ? extends GrantedAuthority> authorities = decodedJWT.getClaim(ROLES).asList(SimpleGrantedAuthority.class);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(null, null, authorities);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
+//    public static void  extractAndSetToken(String authorization, HttpServletRequest request, Integer number) throws Exception{
+//        JWTVerifier verifier = buildVerifier();
+//        String token = authorization.substring(AUTH_HEADER_PREFIX.length()).strip();
+//        DecodedJWT decodedJWT = verifier.verify(token);
+//        List< ? extends GrantedAuthority> authorities = decodedJWT.getClaim(ROLES).asList(SimpleGrantedAuthority.class);
+//        Authentication authentication = new UsernamePasswordAuthenticationToken(null, null, authorities);
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//    }
 }

@@ -58,7 +58,7 @@ public class ControllerTest {
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print());
         mockMvc.perform(post(LOGIN_URL)
-                        .header(AUTHORIZATION, BEARER)
+                        .header(AUTHORIZATION, AUTH_HEADER_PREFIX)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new LoginRequest("email@email.com","Password"))))
                 .andExpect(status().is2xxSuccessful())
@@ -75,7 +75,7 @@ public class ControllerTest {
                 .andDo(print())
                 .andReturn();
         mockMvc.perform(post("/api/v1/nodium/Users/post-jobs")
-                        .header(AUTHORIZATION,BEARER)
+                        .header(AUTHORIZATION, AUTH_HEADER_PREFIX)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new JobRequest(1L, "location",
                                 "description","name",new BigDecimal("9000"),
@@ -83,7 +83,7 @@ public class ControllerTest {
                 .andDo(print())
                 .andExpect(status().is4xxClientError());
        result = mockMvc.perform(post("/api/v1/nodium/login")
-                        .header(AUTHORIZATION, BEARER)
+                        .header(AUTHORIZATION, AUTH_HEADER_PREFIX)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new LoginRequest(
                                 "email@email.com","Password"))))
@@ -91,10 +91,10 @@ public class ControllerTest {
                 .andDo(print())
                 .andReturn();
 
-        String token = result.getResponse().getHeader("Authorization").substring(BEARER.length());
+        String token = result.getResponse().getHeader("Authorization").substring(AUTH_HEADER_PREFIX.length());
         System.out.println("token = " + token);
         mockMvc.perform(post("/api/v1/nodium/Users/post-jobs")
-                        .header(AUTHORIZATION,BEARER +token)
+                        .header(AUTHORIZATION, AUTH_HEADER_PREFIX +token)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new JobRequest(1L, "location",
                                 "description","name",new BigDecimal("9000"),
