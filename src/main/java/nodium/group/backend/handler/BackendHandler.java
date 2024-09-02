@@ -2,6 +2,7 @@ package nodium.group.backend.handler;
 
 import nodium.group.backend.exception.BackEndException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,25 +21,29 @@ public class BackendHandler {
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseBody
     public ResponseEntity<?> BadCredentialsException(BadCredentialsException exception){
-        return ResponseEntity.status(BAD_REQUEST)
+        return ResponseEntity.status(UNAUTHORIZED)
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(Map.of("Error",exception.getMessage(),"success",false));
     }
     @ExceptionHandler(BackEndException.class)
     @ResponseBody
     public ResponseEntity<?> handleEventException(BackEndException exception){
         return ResponseEntity.status(BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(Map.of("Error",exception.getMessage(),"success",false));
     }
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseBody
     public ResponseEntity<?> handleEventException(DataIntegrityViolationException exception){
         return ResponseEntity.status(BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(Map.of("Error",INVALID_DETAILS.getMessage(),"success",false));
     }
     @ExceptionHandler
     @ResponseBody
     public ResponseEntity<?> handleEventException(Exception exception){
         return ResponseEntity.status(BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(Map.of("Error",SOMETHING_WENT_WRONG.getMessage(),"success",false));
     }
 }

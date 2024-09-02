@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,23 +30,30 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Slf4j
 public class AuthourizationFilter extends OncePerRequestFilter {
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
         String requestPath = request.getServletPath();
+        Integer debugger = 0;
         try{
                 if(PUBLIC_URLS.contains(requestPath)){
                     filterChain.doFilter(request,response);
                     return;
                 }
-                String authHeader = request.getHeader(AUTHORIZATION);
-                if(!PUBLIC_URLS.contains(requestPath) && Optional.of(authHeader.substring(AUTH_HEADER_PREFIX.length()).strip()).isPresent()) {
-                    verifyTokenAndSet(authHeader);
+            if (request.getHeader(AUTHORIZATION) != null &&
+                    request.getHeader(AUTHORIZATION).length() > AUTH_HEADER_PREFIX.length() &&
+                    request.getHeader(AUTHORIZATION).startsWith(AUTH_HEADER_PREFIX)){
+                    verifyTokenAndSet(request.getHeader(AUTHORIZATION).substring(7),debugger);
                     filterChain.doFilter(request, response);
                 }
         }
         catch(Exception exception){
             SecurityContextHolder.clearContext();
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getOutputStream().write(RE_LOGIN.getMessage().getBytes());
+            response.getOutputStream().write(
+                    Arrays.toString(exception.getStackTrace()).getBytes()
+//                    (String.format("%s",debugger) + RE_LOGIN.getMessage()).getBytes()
+            );
             response.flushBuffer();
         }
         //        try {
@@ -65,11 +73,16 @@ public class AuthourizationFilter extends OncePerRequestFilter {
 //            response.flushBuffer();
             }
 
-    private void verifyTokenAndSet(String authHeader){
+    private void verifyTokenAndSet(String authHeader,Integer number){
+        number = 2;
         JWTVerifier verifier = buildVerifier();
+        number=3;
         String token = authHeader.substring(AUTH_HEADER_PREFIX.length()).strip();
+        number= 4;
         DecodedJWT decodedJWT = verifier.verify(token);
+        number = 5;
         List<? extends GrantedAuthority> authorities = decodedJWT.getClaim(ROLES).asList(SimpleGrantedAuthority.class);
+        number =6;
         Authentication authentication = new UsernamePasswordAuthenticationToken(null, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }

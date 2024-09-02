@@ -16,12 +16,14 @@ import nodium.group.backend.security.manager.BackendAuthManager;
 import nodium.group.backend.service.interfaces.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,10 +35,14 @@ import static nodium.group.backend.security.utils.Utils.generateToken;
 import static nodium.group.backend.utils.AppUtils.AUTH_HEADER_PREFIX;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-@Slf4j
+@Component
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    @Autowired
-    private BackendAuthManager manager;
+
+    public AuthenticationFilter(BackendAuthManager authenticationManager) {
+        super.setAuthenticationManager(authenticationManager);
+        this.authenticationManager = authenticationManager;
+    }
+    private final AuthenticationManager authenticationManager;
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
@@ -50,7 +56,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             InputStream inputStream = request.getInputStream();
             LoginRequest loginRequest = objectMapper.readValue(inputStream, LoginRequest.class);
             Authentication authentication = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),loginRequest.getPassword());
-            var result = manager.authenticate(authentication);
+            var result = authenticationManager.authenticate(authentication);
             SecurityContextHolder.getContext().setAuthentication(result);
             return result;
         }
@@ -69,14 +75,15 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         LoginResponse loginResponse = new LoginResponse(registerResponse);
         response.addHeader(AUTHORIZATION, AUTH_HEADER_PREFIX +token);
         response.setContentType(APPLICATION_JSON_VALUE);
-        response.getOutputStream().write(objectMapper.
-                writeValueAsBytes(new ApiResponse(true, loginResponse, LocalDateTime.now())));
+        response.getWriter().write(objectMapper.writeValueAsString(
+                new ApiResponse(true, loginResponse, LocalDateTime.now())));
         response.flushBuffer();
     }
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         ApiResponse apiResponse = new ApiResponse(false,SOMETHING_WENT_WRONG.getMessage(),LocalDateTime.now());
         objectMapper.writeValue(response.getOutputStream(),apiResponse);
+        response.setContentType(APPLICATION_JSON_VALUE);
         response.flushBuffer();
     }
 }

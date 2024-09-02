@@ -1,5 +1,6 @@
 package nodium.group.backend.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,14 +12,12 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class RegisterRequest {
-    @Pattern(regexp ="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
-            message = "Mail not valid for Registration")
+    @NotBlank(message = "Email is required")
     private String email;
-    @Pattern(regexp = "^[a-zA-Z0-9][a-zA-Z0-9.,&+/\\-]{7,11}$",
-            message = "Alphanumeric password and special characters is required")
+    @NotBlank(message = "Password is required")
     private String password;
-    @Pattern(regexp = "^[a-zA-Z]{2,}")
+    @NotBlank(message = "Firstname is required")
     private String firstname;
-    @Pattern(regexp = "^[a-zA-Z]{2,}")
+    @NotBlank(message = "Lastname is required")
     private String lastname;
 }

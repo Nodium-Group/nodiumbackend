@@ -27,7 +27,7 @@ public class BackendAuthProvider implements AuthenticationProvider {
         String password = authentication.getCredentials().toString();
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         if(encoder.matches(password,userDetails.getPassword()))
-            return new UsernamePasswordAuthenticationToken(userDetails.getUsername(),userDetails.getPassword(),userDetails.getAuthorities());
+            return new UsernamePasswordAuthenticationToken(userDetails,"[PROTECTED]",userDetails.getAuthorities());
         throw new BadCredentialsException(INVALID_DETAILS_PROVIDED.getMessage());
     }
     @Override

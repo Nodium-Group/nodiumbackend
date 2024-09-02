@@ -15,7 +15,7 @@ public class SecuredUser implements UserDetails {
     private final User user;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(user.getRole()).stream().map(role -> new SimpleGrantedAuthority(role.name())).toList();
+        return Stream.of(user.getRole()).map(role -> new SimpleGrantedAuthority(role.name())).toList();
     }
     @Override
     public String getPassword() {

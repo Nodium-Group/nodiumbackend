@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
@@ -20,26 +21,25 @@ import static nodium.group.backend.utils.AppUtils.*;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
-@EnableWebSecurity
 @Component
 @AllArgsConstructor
 public class SecurityConfigs {
     private final AuthourizationFilter authourizationFilter;
     private final BackendAuthManager manager;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        var authFilter = new AuthenticationFilter();
+        var authFilter = new AuthenticationFilter(manager);
         authFilter.setFilterProcessesUrl(LOGIN_URL);
         authFilter.setAuthenticationManager(manager);
         return httpSecurity.csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
-                .addFilterAt(authFilter, BasicAuthenticationFilter.class)
+                .cors(Customizer.withDefaults())
+                .addFilterAt(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(authourizationFilter, AuthenticationFilter.class)
+                .authorizeHttpRequests(c->c
+                        .requestMatchers(POST,PUBLIC_END_POINTS).permitAll()
+                        .requestMatchers(POST,USER_END_POINTS).hasAnyAuthority(USER.name())
+                        .anyRequest().authenticated())
                 .sessionManagement(state->state.sessionCreationPolicy(STATELESS))
-                .authorizeHttpRequests(c->c.requestMatchers(POST,PUBLIC_END_POINTS).permitAll())
-                .authorizeHttpRequests(c->c.requestMatchers(POST,USER_END_POINTS).hasAuthority(USER.name()))
                 .build();
     }
-
 }

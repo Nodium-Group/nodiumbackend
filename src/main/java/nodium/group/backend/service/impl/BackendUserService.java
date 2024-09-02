@@ -20,17 +20,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
 import static nodium.group.backend.data.enums.Role.USER;
-import static nodium.group.backend.exception.ExceptionMessages.EMAIL_ALREADY_EXIST;
-import static nodium.group.backend.exception.ExceptionMessages.INVALID_DETAILS;
+import static nodium.group.backend.exception.ExceptionMessages.*;
+import static nodium.group.backend.utils.AppUtils.validateRegisterRequest;
 
 @Component
+@Validated
 public class BackendUserService implements UserService {
     @Autowired
     public BackendUserService(ModelMapper mapper, PasswordEncoder encoder, JobService service,
@@ -47,13 +50,14 @@ public class BackendUserService implements UserService {
         this.notificationService= notificationService;
     }
     @Override
-    public RegisterResponse registerUser(@Valid RegisterRequest registerRequest) {
+    public RegisterResponse registerUser( RegisterRequest registerRequest) {
         try {
+//            validateRegisterRequest(registerRequest);
+            registerRequest.setEmail(registerRequest.getEmail().toLowerCase());
             validateMail(registerRequest.getEmail());
             User user = modelMapper.map(registerRequest, User.class);
             user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
             user.setRole(USER);
-//            user.getRole().add(USER);
             user = userRepository.save(user);
             return modelMapper.map(user, RegisterResponse.class);
         }
@@ -61,6 +65,8 @@ public class BackendUserService implements UserService {
             throw new BackEndException(EMAIL_ALREADY_EXIST.getMessage());
         }
     }
+
+
     @Override
     public RegisterResponse updateAddress(UpdateAddressRequest updateRequest) {
         User user = userRepository.findByEmailIgnoreCase(updateRequest.getEmail()).get();

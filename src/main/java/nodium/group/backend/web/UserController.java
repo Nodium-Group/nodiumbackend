@@ -1,5 +1,6 @@
 package nodium.group.backend.web;
 
+import jakarta.validation.Valid;
 import nodium.group.backend.dto.out.ApiResponse;
 import nodium.group.backend.dto.request.BookServiceRequest;
 import nodium.group.backend.dto.request.CancelRequest;
@@ -22,7 +23,7 @@ public class UserController {
     @Autowired
     private UserService userService;
     @PostMapping("Register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request){
+    public ResponseEntity<?> register(@RequestBody @Valid RegisterRequest request){
         return ResponseEntity.status(CREATED).body(
                 new ApiResponse(true,userService.registerUser(request), now()));
     }

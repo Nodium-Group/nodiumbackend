@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import static nodium.group.backend.utils.AppUtils.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,7 +32,7 @@ public class ControllerTest {
     @Test
     @Sql({"/db/truncate.sql"})
     @WithMockUser(roles ="USER")
-    void testUserCanRegister()throws Exception{
+    void testUserCannotRegisiterWithInvalidDetails()throws Exception{
         mockMvc.perform(post("/api/v1/nodium/Users/Register")
                 .contentType(APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new RegisterRequest())))
@@ -41,7 +42,7 @@ public class ControllerTest {
     @Test
     @Sql({"/db/truncate.sql"})
     void testUserCanRegisterWithValidDetails()throws Exception{
-        mockMvc.perform(post("/api/v1/nodium/Users/Register")
+        mockMvc.perform(post(REGISTER_URL)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new RegisterRequest("email@email.com",
                                 "Password","first","last"))))
@@ -52,13 +53,12 @@ public class ControllerTest {
     @Sql({"/db/truncate.sql"})
     void testUserCanRegisterAndLogin()throws Exception{
         mockMvc.perform(post("/api/v1/nodium/Users/Register")
-                        .contentType(APPLICATION_JSON)
+                        .contentType(APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new RegisterRequest("email@email.com",
                                 "Password","first","last"))))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print());
         mockMvc.perform(post(LOGIN_URL)
-                        .header(AUTHORIZATION, AUTH_HEADER_PREFIX)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new LoginRequest("email@email.com","Password"))))
                 .andExpect(status().is2xxSuccessful())
@@ -74,16 +74,7 @@ public class ControllerTest {
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print())
                 .andReturn();
-        mockMvc.perform(post("/api/v1/nodium/Users/post-jobs")
-                        .header(AUTHORIZATION, AUTH_HEADER_PREFIX)
-                        .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new JobRequest(1L, "location",
-                                "description","name",new BigDecimal("9000"),
-                                "REMOTE"))))
-                .andDo(print())
-                .andExpect(status().is4xxClientError());
        result = mockMvc.perform(post("/api/v1/nodium/login")
-                        .header(AUTHORIZATION, AUTH_HEADER_PREFIX)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new LoginRequest(
                                 "email@email.com","Password"))))

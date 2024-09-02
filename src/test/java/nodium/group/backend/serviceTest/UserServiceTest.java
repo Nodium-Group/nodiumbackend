@@ -37,49 +37,49 @@ public class UserServiceTest {
           log.info("JobResponse --->{}",jobResponse);
       }
       @Test
-      @Sql(scripts = {"/db/data.Users.sql"})
+      @Sql(scripts = {"/db/data.organizer.sql"})
       void testUserCanBookAProviderJob(){
-          BookServiceRequest bookServiceRequest = new BookServiceRequest(5L,"job",12L,
+          BookServiceRequest bookServiceRequest = new BookServiceRequest(1L,"job",2L,
                   LocalDateTime.now(),new BigDecimal("200"));
           BookServiceResponse bookServiceResponse = userService.bookService(bookServiceRequest);
           assertNotNull(bookServiceResponse);
           log.info("BookService Response--> {}",bookServiceResponse);
       }
         @Test
-        @Sql(scripts = {"/db/data.Users.sql"})
+        @Sql(scripts = {"/db/data.organizer.sql"})
         void testUserAndProviderRecieveNotificactionWhenServiceIsBooked(){
-            assertEquals(0,userService.getUserNotifications(5L).size());
-            assertEquals(0,userService.getUserNotifications(12L).size());
-            BookServiceRequest bookServiceRequest = new BookServiceRequest(5L,"job",
-                    12L, LocalDateTime.now(),new BigDecimal("200"));
+            assertEquals(0,userService.getUserNotifications(1L).size());
+            assertEquals(0,userService.getUserNotifications(2L).size());
+            BookServiceRequest bookServiceRequest = new BookServiceRequest(1L,"job",
+                    2L, LocalDateTime.now(),new BigDecimal("200"));
             BookServiceResponse bookServiceResponse = userService.bookService(bookServiceRequest);
             assertNotNull(bookServiceResponse);
             log.info("BookService Response--> {}",bookServiceResponse);
-            assertEquals(1,userService.getUserNotifications(5L).size());
-            assertEquals(1,userService.getUserNotifications(12L).size());
+            assertEquals(1,userService.getUserNotifications(1L).size());
+            assertEquals(1,userService.getUserNotifications(2L).size());
           }
         @Test
-        @Sql(scripts = {"/db/data.Users.sql"})
+        @Sql(scripts = {"/db/data.organizer.sql"})
         void testUserCanCancelBookings(){
-            BookServiceRequest bookServiceRequest = new BookServiceRequest(5L,"job",12L,
+            BookServiceRequest bookServiceRequest = new BookServiceRequest(1L,"job",2L,
                     LocalDateTime.now(),new BigDecimal("200"));
             BookServiceResponse response = userService.bookService(bookServiceRequest);
-            assertEquals(1,userService.getUserNotifications(5L).size());
-            assertEquals(1,userService.getUserNotifications(12L).size());
-            userService.getUserNotifications(5L).stream()
+            assertEquals(1,userService.getUserNotifications(1L).size());
+            assertEquals(1,userService.getUserNotifications(2L).size());
+            userService.getUserNotifications(1L).stream()
                     .forEach(notificationResponse -> {log.info("Notification----->{}",notificationResponse);});
-            userService.getUserNotifications(12L).stream()
+            userService.getUserNotifications(2L).stream()
                     .forEach(notificationResponse -> {log.info("Notification----->{}",notificationResponse);});
             CancelRequest cancelRequest = new CancelRequest(response.getCustomerId(),response.getOrderId(), "Not interested again");
             BookServiceResponse cancelResponse = userService.cancelBooking(cancelRequest);
             assertNotNull(cancelResponse);
             log.info("CANCELRESPONSE -----> {}",cancelResponse);
-            assertEquals(2,userService.getUserNotifications(5L).size());
-            userService.getUserNotifications(5L).stream()
+            assertEquals(2,userService.getUserNotifications(1L).size());
+            userService.getUserNotifications(1L).stream()
                     .forEach(notificationResponse -> {log.info("Notification----->{}",notificationResponse);});
-            userService.getUserNotifications(12L).stream()
+            userService.getUserNotifications(2L).stream()
                     .forEach(notificationResponse -> {log.info("Notification----->{}",notificationResponse);});
-            assertEquals(2,userService.getUserNotifications(12L).size());
+            assertEquals(2,userService.getUserNotifications(2L).size());
         }
         // test user can cancel booking
         // test user can accept booked service
