@@ -65,7 +65,7 @@ public class AuthourizationFilter extends OncePerRequestFilter {
 //            response.flushBuffer();
             }
 
-    private void verifyTokenAndSet(String authHeader) {
+    private void verifyTokenAndSet(String authHeader){
         JWTVerifier verifier = buildVerifier();
         String token = authHeader.substring(AUTH_HEADER_PREFIX.length()).strip();
         DecodedJWT decodedJWT = verifier.verify(token);

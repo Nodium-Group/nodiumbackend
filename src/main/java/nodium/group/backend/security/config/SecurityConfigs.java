@@ -29,20 +29,17 @@ public class SecurityConfigs {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity.csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
-                .addFilterAt(new AuthenticationFilter(), BasicAuthenticationFilter.class)
-                .addFilterBefore(authourizationFilter, AuthenticationFilter.class)
-                .sessionManagement(state->state.sessionCreationPolicy(STATELESS))
-                .authorizeHttpRequests(c->c.requestMatchers(POST,PUBLIC_END_POINTS).permitAll()
-                        .requestMatchers(POST,USER_END_POINTS).hasAuthority(USER.name()))
-                .build();
-    }
-    @Bean
-    public AuthenticationFilter authenticationFilter(){
         var authFilter = new AuthenticationFilter();
         authFilter.setFilterProcessesUrl(LOGIN_URL);
         authFilter.setAuthenticationManager(manager);
-        return authFilter;
+        return httpSecurity.csrf(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable)
+                .addFilterAt(authFilter, BasicAuthenticationFilter.class)
+                .addFilterBefore(authourizationFilter, AuthenticationFilter.class)
+                .sessionManagement(state->state.sessionCreationPolicy(STATELESS))
+                .authorizeHttpRequests(c->c.requestMatchers(POST,PUBLIC_END_POINTS).permitAll())
+                .authorizeHttpRequests(c->c.requestMatchers(POST,USER_END_POINTS).hasAuthority(USER.name()))
+                .build();
     }
+
 }

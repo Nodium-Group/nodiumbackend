@@ -67,7 +67,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         String token = generateToken(roles);
         var registerResponse = mapper.map(user, RegisterResponse.class);
         LoginResponse loginResponse = new LoginResponse(registerResponse);
-        response.setHeader(AUTHORIZATION, AUTH_HEADER_PREFIX +token);
+        response.addHeader(AUTHORIZATION, AUTH_HEADER_PREFIX +token);
         response.setContentType(APPLICATION_JSON_VALUE);
         response.getOutputStream().write(objectMapper.
                 writeValueAsBytes(new ApiResponse(true, loginResponse, LocalDateTime.now())));
