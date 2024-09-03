@@ -35,7 +35,6 @@ import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static java.time.LocalDateTime.now;
 import static nodium.group.backend.exception.ExceptionMessages.SOMETHING_WENT_WRONG;
 import static nodium.group.backend.utils.AppUtils.*;
-import static org.apache.tomcat.websocket.Constants.UNAUTHORIZED;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 

@@ -9,6 +9,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nodium.group.backend.exception.BackEndException;
+import nodium.group.backend.security.service.TokenService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,6 +28,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Component
 public class AuthorizationFilter extends OncePerRequestFilter {
+    @Autowired
+    private TokenService tokenService;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String header = request.getHeader(AUTHORIZATION);
@@ -38,7 +42,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                     header.substring(SEVEN).length()>AUTH_HEADER_PREFIX.length();
             if(header!= null && isValidHeader ){
                 String token = header.substring(SEVEN).strip();
-                if(Optional.of(token).isEmpty()) throw new BackEndException(RE_LOGIN.getMessage());
+                if(Optional.of(token).isEmpty() || !tokenService.isValid(token)) throw new BackEndException(RE_LOGIN.getMessage());
                 JWTVerifier verifier = buildVerifier();
                 DecodedJWT decodedJWT = verifier.verify(token);
                 List<? extends GrantedAuthority> authorities = decodedJWT.getClaim(ROLES).asList(SimpleGrantedAuthority.class);
@@ -52,7 +56,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         }
     }
 
-    private static JWTVerifier buildVerifier() {
+    public static JWTVerifier buildVerifier() {
         return JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
                 .withIssuer(APP_NAME)
                 .withClaimPresence(ROLES)
