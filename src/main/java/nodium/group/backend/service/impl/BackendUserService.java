@@ -6,30 +6,34 @@ import nodium.group.backend.data.enums.Role;
 import nodium.group.backend.data.models.*;
 import nodium.group.backend.data.repository.NotificationRepository;
 import nodium.group.backend.data.repository.OrderRepository;
+import nodium.group.backend.dto.request.*;
+import nodium.group.backend.dto.out.*;
 import nodium.group.backend.exception.BackEndException;
 import nodium.group.backend.data.repository.ReviewRepository;
-import nodium.group.backend.response.*;
 import nodium.group.backend.service.interfaces.JobService;
 import nodium.group.backend.service.interfaces.NotificationService;
 import nodium.group.backend.service.interfaces.UserService;
 import nodium.group.backend.data.repository.UserRepository;
-import nodium.group.backend.request.*;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
 import static nodium.group.backend.data.enums.Role.USER;
-import static nodium.group.backend.exception.ExceptionMessages.EMAIL_ALREADY_EXIST;
-import static nodium.group.backend.exception.ExceptionMessages.INVALID_DETAILS;
+import static nodium.group.backend.exception.ExceptionMessages.*;
+import static nodium.group.backend.utils.AppUtils.validateRegisterRequest;
 
 @Component
+@Validated
 public class BackendUserService implements UserService {
     @Autowired
     public BackendUserService(ModelMapper mapper, PasswordEncoder encoder, JobService service,
@@ -46,12 +50,13 @@ public class BackendUserService implements UserService {
         this.notificationService= notificationService;
     }
     @Override
-    public RegisterResponse registerUser(@Valid RegisterRequest registerRequest) {
+    public RegisterResponse registerUser( RegisterRequest registerRequest) {
         try {
+            registerRequest.setEmail(registerRequest.getEmail().toLowerCase());
             validateMail(registerRequest.getEmail());
             User user = modelMapper.map(registerRequest, User.class);
             user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-            user.getRole().add(USER);
+            user.setRole(USER);
             user = userRepository.save(user);
             return modelMapper.map(user, RegisterResponse.class);
         }
@@ -59,13 +64,15 @@ public class BackendUserService implements UserService {
             throw new BackEndException(EMAIL_ALREADY_EXIST.getMessage());
         }
     }
+
+
     @Override
     public RegisterResponse updateAddress(UpdateAddressRequest updateRequest) {
         User user = userRepository.findByEmailIgnoreCase(updateRequest.getEmail()).get();
         user.setAddress(modelMapper.map(updateRequest, Address.class));
         user=userRepository.save(user);
         var addressAdded = modelMapper.map(user.getAddress(), AddressResponse.class);
-        return new RegisterResponse(user.getId(),user.getFirstname(),user.getEmail(),addressAdded);
+        return new RegisterResponse(user.getId(),user.getFirstname(),user.getLastname(),user.getEmail(),addressAdded);
     }
     @Override
     public User getUserByEmail(String username) {
@@ -92,9 +99,18 @@ public class BackendUserService implements UserService {
     }
     @Override
     public BookServiceResponse cancelBooking(@Valid CancelRequest cancelRequest) {
-        CustomerOrder order = getCustomerOrder(cancelRequest);
-        notifyUserAndProvider(cancelRequest);
-        return getBookResponse(cancelRequest, order);
+        CustomerOrder order = orderRepository.findById(cancelRequest.getOrderId()).get();
+        order.setTimeUpdated(now());
+        order.setStatus(OrderStatus.TERMINATED);
+        order =orderRepository.save(order);
+        notifyUserAndProvider(order,cancelRequest.getReason());
+        return new BookServiceResponse(cancelRequest.getReason(),order.getId(),
+                order.getStatus(),order.getTimeStamp(), order.getProvider().getId(),
+                order.getCustomer().getId(),order.getTimeUpdated());
+    }
+    private void notifyUserAndProvider(CustomerOrder order,String reason){
+        notifyUser(order.getCustomer().getId(),reason,"Canceled Booking");
+        notifyUser(order.getProvider().getId(),"Canceled Booking","Booking  was TERMINATED");
     }
 
     @Override
@@ -108,24 +124,29 @@ public class BackendUserService implements UserService {
     }
 
     @Override
-    public List<User> findAllByRole(Role role){
+    public List<NotificationResponse> getUserNotifications(Long userId) {
+        return notificationRepository.findByUser(userRepository.findById(userId).get()).stream()
+                .map(notification -> modelMapper.map(notification,NotificationResponse.class))
+                .toList();
+    }
 
-        return userRepository.findAll().stream().filter(user -> user.getRole().contains(role)).toList();
+    @Override
+    public List<User> findAllByRole(Role role){
+        return userRepository.findAll().stream().filter(user -> user.getRole().name().equals(role.name())).toList();
     }
     @Override
     public BookServiceResponse bookService(@Valid BookServiceRequest bookRequest) {
         CustomerOrder customerOrder = buildOrder(bookRequest);
         customerOrder = orderRepository.save(customerOrder);
-        Notification notification = createNotification(bookRequest);
-        notificationRepository.save(notification);
+        notifyUserAndProvider(bookRequest);
         return BookServiceResponse.builder().orderId(customerOrder.getId())
                 .providerId(customerOrder.getProvider().getId()).customerId(bookRequest.getId())
                 .status(customerOrder.getStatus()).timeStamp(customerOrder.getTimeStamp())
-                .bookingMessage(bookRequest.getOrderDescription()).build();
+                .orderDescription(bookRequest.getOrderDescription()).build();
     }
-    private Notification notifyUser(Long userId, String description) {
+    private Notification notifyProvider(Long userId, String description, OrderStatus status) {
         return Notification.builder()
-                .purpose("Order was "+ OrderStatus.TERMINATED.name())
+                .purpose(String.format("You have a %s Order ",status))
                 .user(userRepository.findById(userId).get())
                 .description(description)
                 .build();
@@ -134,39 +155,24 @@ public class BackendUserService implements UserService {
         return CustomerOrder.builder()
                 .status(OrderStatus.PENDING)
                 .customer(userRepository.findById(bookRequest.getId()).get())
-                .provider(userRepository.findById(bookRequest.getServiceId()).get())
+                .provider(userRepository.findById(bookRequest.getUserId()).get())
                 .build();
     }
-    private void notifyUserAndProvider(CancelRequest cancelRequest) {
-        Notification notification= notifyUser(cancelRequest.getUserId(), cancelRequest.getReason());
+    private void notifyUserAndProvider(BookServiceRequest request){
+        Notification notification= notifyProvider(request.getUserId(),
+                                   request.getOrderDescription(), OrderStatus.PENDING);
         notificationRepository.save(notification);
-        notification = notifyUser(userRepository.
-                        findById(cancelRequest.getProviderId()).get().getId(),
-                cancelRequest.getReason());
-        notificationRepository.save(notification);
+        notifyUser(request.getId(),request.getOrderDescription(),"You Booked a Service");
+
     }
     private void validateMail(String email){
         if(userRepository.findByEmailIgnoreCase(email).isPresent())
             throw new DataIntegrityViolationException(EMAIL_ALREADY_EXIST.getMessage());
     }
-    private CustomerOrder getCustomerOrder(CancelRequest cancelRequest) {
-        CustomerOrder order = orderRepository.findById(cancelRequest.getOrderId()).get();
-        order.setStatus(OrderStatus.TERMINATED);
-        order.setTimeUpdated(now());
-        order=orderRepository.save(order);
-        return order;
-    }
-    private static BookServiceResponse getBookResponse(CancelRequest cancelRequest, CustomerOrder order) {
-        return BookServiceResponse.builder().customerId(cancelRequest.getUserId())
-                .timeUpdated(order.getTimeUpdated()).providerId(cancelRequest.getProviderId())
-                .orderId(order.getId()).status(order.getStatus()).build();
-    }
-    private Notification createNotification(BookServiceRequest bookRequest){
-        return Notification.builder()
-                .user(userRepository.findById(bookRequest.getServiceId()).get())
-                .description(bookRequest.getOrderDescription())
-                .purpose("Service Booking")
-                .build();
+    private void notifyUser(Long userId,String description,String purpose){
+        var notification = new Notification(null,purpose,description,
+                userRepository.findById(userId).get(),now(),false);
+        notificationRepository.save(notification);
     }
     private final ReviewRepository reviewRepository;
     private final ModelMapper modelMapper;
