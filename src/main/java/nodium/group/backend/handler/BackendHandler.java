@@ -39,11 +39,11 @@ public class BackendHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Map.of("Error",INVALID_DETAILS.getMessage(),"success",false));
     }
-    @ExceptionHandler
+    @ExceptionHandler(Exception.class)
     @ResponseBody
     public ResponseEntity<?> handleEventException(Exception exception){
         return ResponseEntity.status(BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of("Error",SOMETHING_WENT_WRONG.getMessage(),"success",false));
+                .body(Map.of("Error",exception.getMessage(),"success",false));
     }
 }

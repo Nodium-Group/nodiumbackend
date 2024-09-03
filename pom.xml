@@ -87,11 +87,11 @@
 			<artifactId>java-jwt</artifactId>
 			<version>4.4.0</version>
 		</dependency>
-		<dependency>
-			<groupId>net.sourceforge.tess4j</groupId>
-			<artifactId>tess4j</artifactId>
-			<version>LATEST</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>net.sourceforge.tess4j</groupId>-->
+<!--			<artifactId>tess4j</artifactId>-->
+<!--			<version>LATEST</version>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>jakarta.validation</groupId>
 			<artifactId>jakarta.validation-api</artifactId>

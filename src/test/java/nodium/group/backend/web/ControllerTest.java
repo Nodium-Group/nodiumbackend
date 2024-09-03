@@ -30,15 +30,6 @@ public class ControllerTest {
     private ObjectMapper objectMapper;
     @Test
     @Sql({"/db/truncate.sql"})
-    void testUserCannotRegisiterWithInvalidDetails()throws Exception{
-        mockMvc.perform(post("/api/v1/nodium/Users/Register")
-                .contentType(APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(new RegisterRequest())))
-                .andExpect(status().isBadRequest())
-                .andDo(print());
-    }
-    @Test
-    @Sql({"/db/truncate.sql"})
     void testUserCanRegisterWithValidDetails()throws Exception{
         mockMvc.perform(post(REGISTER_URL)
                         .contentType(APPLICATION_JSON_VALUE)

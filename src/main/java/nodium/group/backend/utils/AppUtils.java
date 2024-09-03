@@ -11,11 +11,12 @@ import static nodium.group.backend.exception.ExceptionMessages.INVALID_DETAILS_P
 public class AppUtils {
     public static String APP_NAME = "NODIUM";
     public static String ROLES = "Roles";
+    public static Integer SEVEN = 7;
     public static String AUTH_HEADER_PREFIX = "Bearer ";
     public static String LOGIN_URL = "/api/v1/nodium/login";
     public static String REGISTER_URL = "/api/v1/nodium/Users/Register";
     public static String SECRET = "Our Application name is Nodium Backend";
-    public static List<String> PUBLIC_URLS = List.of(REGISTER_URL,LOGIN_URL);
+    public static List<String> PUBLIC_URLS = List.of(REGISTER_URL,LOGIN_URL,"/api/v1/providers/register");
     public static String[] USER_END_POINTS = {"/api/v1/nodium/Users/post-jobs"};
     public static String[] PUBLIC_END_POINTS = {REGISTER_URL,LOGIN_URL,
     "/api/v1/providers/register"};

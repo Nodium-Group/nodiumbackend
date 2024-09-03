@@ -52,7 +52,6 @@ public class BackendUserService implements UserService {
     @Override
     public RegisterResponse registerUser( RegisterRequest registerRequest) {
         try {
-//            validateRegisterRequest(registerRequest);
             registerRequest.setEmail(registerRequest.getEmail().toLowerCase());
             validateMail(registerRequest.getEmail());
             User user = modelMapper.map(registerRequest, User.class);
@@ -159,14 +158,6 @@ public class BackendUserService implements UserService {
                 .provider(userRepository.findById(bookRequest.getUserId()).get())
                 .build();
     }
-//    private void notifyUserAndProvider(CancelRequest cancelRequest,OrderStatus status) {
-//        Notification notification= notifyUser(cancelRequest.getUserId(), cancelRequest.getReason(),status);
-//        notificationRepository.save(notification);
-//        notification = notifyUser(userRepository.
-//                        findById(cancelRequest.getProviderId()).get().getId(),
-//                cancelRequest.getReason());
-//        notificationRepository.save(notification);
-//    }
     private void notifyUserAndProvider(BookServiceRequest request){
         Notification notification= notifyProvider(request.getUserId(),
                                    request.getOrderDescription(), OrderStatus.PENDING);
@@ -183,25 +174,6 @@ public class BackendUserService implements UserService {
                 userRepository.findById(userId).get(),now(),false);
         notificationRepository.save(notification);
     }
-//    private CustomerOrder getCustomerOrder(CancelRequest cancelRequest) {
-//        CustomerOrder order = orderRepository.findById(cancelRequest.getOrderId()).get();
-//        order.setStatus(OrderStatus.TERMINATED);
-//        order.setTimeUpdated(now());
-//        order=orderRepository.save(order);
-//        return order;
-//    }
-//    private static BookServiceResponse getBookResponse(CancelRequest cancelRequest, CustomerOrder order) {
-//        return BookServiceResponse.builder().customerId(cancelRequest.getUserId())
-////                .timeUpdated(order.getTimeUpdated()).providerId(cancelRequest.getProviderId())
-//                .orderId(order.getId()).status(order.getStatus()).build();
-//    }
-//    private Notification createNotification(BookServiceRequest bookRequest){
-//        return Notification.builder()
-//                .user(userRepository.findById(bookRequest.()).get())
-//                .description(bookRequest.getOrderDescription())
-//                .purpose("Service Booking")
-//                .build();
-//    }
     private final ReviewRepository reviewRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
