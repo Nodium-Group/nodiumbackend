@@ -10,28 +10,33 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import static nodium.group.backend.data.enums.Role.PROVIDER;
 import static nodium.group.backend.exception.ExceptionMessages.EMAIL_ALREADY_EXIST;
 
-@Component
+@Service
 @Validated
 public class BackendProviderService implements ProviderService {
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ModelMapper mmodelMapper;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public BackendProviderService(UserRepository userRepository, ModelMapper modelMapper,PasswordEncoder encoder){
+        this.userRepository = userRepository;
+        this.modelMapper= modelMapper;
+        this.passwordEncoder= encoder;
+    }
+    private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
     @Override
     public RegisterResponse register(RegisterRequest request) {
-        User user = mmodelMapper.map(request,User.class);
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        User user = modelMapper.map(request,User.class);
+        var password = passwordEncoder.encode(request.getPassword());
+        user.setPassword(password);
         validateMail(request.getEmail());
         user.setRole(PROVIDER);
         user= userRepository.save(user);
-        return mmodelMapper.map(user,RegisterResponse.class);
+        return modelMapper.map(user,RegisterResponse.class);
     }
     private void validateMail(String email){
         if(userRepository.findByEmailIgnoreCase(email).isPresent())

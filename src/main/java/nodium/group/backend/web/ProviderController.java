@@ -17,7 +17,7 @@ public class ProviderController {
     private ProviderService userService;
     @PostMapping("register")
     public ResponseEntity<?> register(@Validated RegisterRequest request){
-        return ResponseEntity.status(200)
+        return ResponseEntity.status(201)
                 .body(userService.register(request));
     }
 }

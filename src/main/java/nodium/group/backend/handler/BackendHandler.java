@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import static nodium.group.backend.exception.ExceptionMessages.INVALID_DETAILS;
@@ -44,6 +45,6 @@ public class BackendHandler {
     public ResponseEntity<?> handleEventException(Exception exception){
         return ResponseEntity.status(BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of("Error",exception.getMessage(),"success",false));
+                .body(Map.of("Error", Arrays.toString(exception.getStackTrace()),"success",false));
     }
 }
