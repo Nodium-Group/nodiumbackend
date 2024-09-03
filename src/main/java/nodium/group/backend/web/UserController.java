@@ -2,10 +2,7 @@ package nodium.group.backend.web;
 
 import jakarta.validation.Valid;
 import nodium.group.backend.dto.out.ApiResponse;
-import nodium.group.backend.dto.request.BookServiceRequest;
-import nodium.group.backend.dto.request.CancelRequest;
-import nodium.group.backend.dto.request.JobRequest;
-import nodium.group.backend.dto.request.RegisterRequest;
+import nodium.group.backend.dto.request.*;
 import nodium.group.backend.service.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +40,10 @@ public class UserController {
     public ResponseEntity<?> cancelBooking(@RequestBody BookServiceRequest bookServiceRequest){
         return ResponseEntity.status(200).body(new ApiResponse(true,
                 userService.bookService(bookServiceRequest),now()));
+    }
+    @PatchMapping("updatePassword")
+    public ResponseEntity<?> updatePassword(UpdatePasswordRequest updatePassword){
+        return ResponseEntity.status(OK).body(userService.updatePassword(updatePassword));
     }
 
 }
