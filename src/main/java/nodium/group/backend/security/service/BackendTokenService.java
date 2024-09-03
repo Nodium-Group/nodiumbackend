@@ -31,10 +31,6 @@ public class BackendTokenService implements TokenService{
         if(isAvailable) buildVerifier().verify(token);
         return true;
     }
-    @Scheduled(cron = "0 0 0 * * *")
-    private void deleteAllTokens(){
-        List<Tokens> allInvalidTokes = tokenRepository.findAll().stream().filter(Tokens::isBlackListed).toList();
-        tokenRepository.deleteAll(allInvalidTokes);
-    }
+
 
 }
