@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import nodium.group.backend.data.enums.Role;
 import nodium.group.backend.security.filter.AuthenticationFilter;
 import nodium.group.backend.security.filter.AuthorizationFilter;
+import nodium.group.backend.security.filter.LogoutFilter;
+import nodium.group.backend.security.service.TokenService;
 import nodium.group.backend.service.interfaces.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,15 +43,17 @@ public class SecurityConfig{
         authenticationFilter.setAuthenticationManager(manager);
         authenticationFilter.setFilterProcessesUrl(LOGIN_URL);
 
-        return httpSecurity.
-                addFilterAt(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(authorizationFilter, AuthenticationFilter.class)
+
+        return httpSecurity
                 .sessionManagement(session->session.sessionCreationPolicy(STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(c->c.requestMatchers(POST,PUBLIC_END_POINTS).permitAll()
                         .requestMatchers("/api/v1/nodium/Users/**").hasAuthority(USER.name())
                         .requestMatchers("/api/v1/providers/**").hasAuthority(PROVIDER.name()))
+                .addFilterAt(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new LogoutFilter(), AuthorizationFilter.class)
                 .build();
     }
 }
