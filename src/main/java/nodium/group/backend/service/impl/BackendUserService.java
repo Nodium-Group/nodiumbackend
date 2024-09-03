@@ -131,6 +131,15 @@ public class BackendUserService implements UserService {
     }
 
     @Override
+    public RegisterResponse updatePassword(UpdatePasswordRequest updatePassword) {
+        User user = userRepository.findByEmailIgnoreCase(updatePassword.getEmail()).get();
+        user.setPassword(passwordEncoder.encode(updatePassword.getPassword()));
+        user = userRepository.save(user);
+        return new RegisterResponse(user.getId(),user.getFirstname(),user.getLastname(),user.getEmail()
+                                    ,modelMapper.map(user.getAddress(),AddressResponse.class));
+    }
+
+    @Override
     public List<User> findAllByRole(Role role){
         return userRepository.findAll().stream().filter(user -> user.getRole().name().equals(role.name())).toList();
     }

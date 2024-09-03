@@ -21,4 +21,5 @@ public interface UserService {
     List<User> findAllByRole(Role role);
     List<JobResponse> findAllJobsCreatedByUser(String email);
     List<NotificationResponse> getUserNotifications(Long userId);
+    RegisterResponse updatePassword(UpdatePasswordRequest updatePassword);
 }
