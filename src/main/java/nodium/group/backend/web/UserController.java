@@ -22,9 +22,7 @@ public class UserController {
     @PostMapping("Register")
     public ResponseEntity<?> register(@RequestBody @Valid RegisterRequest request){
         return ResponseEntity.status(CREATED).body(
-                new ApiResponse(true,
-                        userService.registerUser(request),
-                        now()));
+                new ApiResponse(true, userService.registerUser(request), now()));
     }
     @PostMapping("post-jobs")
     public ResponseEntity<?> postJobs(@RequestBody JobRequest request) {
@@ -36,14 +34,24 @@ public class UserController {
         return ResponseEntity.status(200).body(new ApiResponse(true,
                 userService.cancelBooking(cancelRequest),now()));
     }
-    @PatchMapping("book")
+    @PatchMapping("book-a-service")
     public ResponseEntity<?> cancelBooking(@RequestBody BookServiceRequest bookServiceRequest){
         return ResponseEntity.status(200).body(new ApiResponse(true,
                 userService.bookService(bookServiceRequest),now()));
     }
-    @PatchMapping("updatePassword")
+    @PatchMapping("update-password")
     public ResponseEntity<?> updatePassword(UpdatePasswordRequest updatePassword){
-        return ResponseEntity.status(OK).body(userService.updatePassword(updatePassword));
+        return ResponseEntity.status(OK)
+                .body(new ApiResponse(true,userService.updatePassword(updatePassword),now()));
     }
-
+    @PostMapping("drop-review")
+    public ResponseEntity<?> review(ReviewRequest request){
+        return ResponseEntity.status(OK).
+                body(new ApiResponse(true,userService.dropReview(request),now()));
+    }
+    @PatchMapping("update-address")
+    public ResponseEntity<?> updateAddress(UpdateAddressRequest request){
+        return ResponseEntity.status(OK)
+                .body(new ApiResponse(true,userService.updateAddress(request),now()));
+    }
 }

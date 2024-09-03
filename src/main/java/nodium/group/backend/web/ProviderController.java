@@ -20,4 +20,8 @@ public class ProviderController {
         return ResponseEntity.status(201)
                 .body(userService.register(request));
     }
+//    @PostMapping("getAllBooking")
+//    public ResponseEntity<?> getAllBookings(){
+//        return ResponseEntity.of()
+//    }
 }
