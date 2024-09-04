@@ -31,7 +31,7 @@ public class MailService implements NodiumMailer {
                 <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Verification Code</title>
+                    <title>OTP Code</title>
                     <style>
                         body {
                             font-family: Arial, sans-serif;

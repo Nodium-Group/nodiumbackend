@@ -1,5 +1,6 @@
 package nodium.group.backend.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import nodium.group.backend.data.models.User;
 import nodium.group.backend.data.repository.UserRepository;
 import nodium.group.backend.dto.out.RegisterResponse;
@@ -17,6 +18,7 @@ import static nodium.group.backend.data.enums.Role.PROVIDER;
 import static nodium.group.backend.exception.ExceptionMessages.EMAIL_ALREADY_EXIST;
 
 @Service
+@Slf4j
 @Validated
 public class BackendProviderService implements ProviderService {
     @Autowired
@@ -30,11 +32,13 @@ public class BackendProviderService implements ProviderService {
     private final PasswordEncoder passwordEncoder;
     @Override
     public RegisterResponse register(RegisterRequest request) {
-        User user = modelMapper.map(request,User.class);
-        var password = passwordEncoder.encode(request.getPassword());
-        user.setPassword(password);
+        log.info("PASSWORD ---> {}",request.toString());
+        User user = User.builder().firstname(request.getFirstname())
+                .lastname(request.getLastname())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(PROVIDER)
+                .build();
         validateMail(request.getEmail());
-        user.setRole(PROVIDER);
         user= userRepository.save(user);
         return modelMapper.map(user,RegisterResponse.class);
     }
