@@ -36,9 +36,7 @@ class BackendUserServiceTest {
 
     @BeforeEach
     void setUp(){
-       // userRepository.deleteAll();
-       // serviceRepository.deleteAll();
-      //  jobRepository.deleteAll();
+
     }
     @Test
     void registerUser() {

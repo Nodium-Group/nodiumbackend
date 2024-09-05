@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface JobService {
     Service addService(Service job);
-    void deleteJob(DeleteJobRequest deleteJobRquest);
+    void deleteJob(DeleteJobRequest deleteJobRequest);
     List<JobResponse> findAllJobs(String email);
 }
