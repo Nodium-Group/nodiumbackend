@@ -21,10 +21,11 @@ public class Notification {
     private Long id;
     private String purpose;
     private String description;
-    @OneToOne
+    @ManyToOne
     private User user;
     @Setter(NONE)
     private LocalDateTime timeStamp;
+    private boolean isSeen;
     @PrePersist
     private void setTimeStamp(){
         timeStamp= now();

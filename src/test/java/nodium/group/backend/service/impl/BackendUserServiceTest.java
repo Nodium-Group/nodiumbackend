@@ -4,22 +4,17 @@ import nodium.group.backend.data.enums.Role;
 import nodium.group.backend.data.repository.JobRepository;
 import nodium.group.backend.data.repository.ServiceRepository;
 import nodium.group.backend.data.repository.UserRepository;
-import nodium.group.backend.request.*;
-import nodium.group.backend.response.JobResponse;
+import nodium.group.backend.dto.request.*;
 import nodium.group.backend.service.interfaces.JobService;
-import org.apache.catalina.connector.Response;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.math.BigDecimal;
-
 import static java.math.BigDecimal.TEN;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 class BackendUserServiceTest {
 
@@ -120,7 +115,7 @@ class BackendUserServiceTest {
         cancelRequest.setUserId(5L);
         cancelRequest.setReason("insufficient funds");
         cancelRequest.setOrderId(2L);
-        cancelRequest.setProviderId(5L);
+//        cancelRequest.setProviderId(5L);
         assertThat(cancelRequest.getReason()).isEqualTo("insufficient funds");
 
 
@@ -141,12 +136,6 @@ class BackendUserServiceTest {
     @Test
     @Sql(scripts = {"/db/data.Users.sql"})
     void findAllJobsCreatedByUser() {
-//        RegisterRequest registerRequest = new RegisterRequest();
-//        registerRequest.setEmail("isaiahugoeze@gmail.com");
-//        registerRequest.setFirstname("Marvellous");
-//        registerRequest.setLastname("Isaiah");
-//        registerRequest.setPassword("12345");
-//        var response = backendUserService.registerUser(registerRequest);
         JobRequest jobRequest = new JobRequest();
         jobRequest.setCategory("tech");
         jobRequest.setUserId(5L);

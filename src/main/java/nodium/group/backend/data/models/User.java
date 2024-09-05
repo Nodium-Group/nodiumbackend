@@ -28,7 +28,7 @@ public class User {
     @Column(unique = true)
     private String email;
     @Enumerated(EnumType.STRING)
-    private Set<Role> role = new HashSet<>();
+    private Role role;
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 }

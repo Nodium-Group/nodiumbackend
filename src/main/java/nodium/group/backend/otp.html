@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Code</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;            text-align: center;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .verification-code {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .notice {
+            font-style: italic;
+            color: #888;
+        }
+        .ban-button {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body style="display:flex;justify-content: center;align-items: center">
+<table class="container">
+    <h1>Verification Code</h1>
+    <p>The verification code is:</p>
+    <div class="verification-code">${pin}</div>
+    <p>Your verification code is valid for 5 minutes.</p>
+    <p>For the security of your account, please do not disclose the following verification code to anyone, including Bybit staff.</p>
+    <p>If you need further assistance, please contact our live customer support or email us at <a href="mailto:support@bybit.com">support@bybit.com</a>.</p>
+    <p class="notice">Notice: You can click the button below to ban this account if it wasn't you.</p>
+    <a class="ban-button" href="https://example.com/ban-link">Ban This Account</a>
+</table>
+</body>
+</html>

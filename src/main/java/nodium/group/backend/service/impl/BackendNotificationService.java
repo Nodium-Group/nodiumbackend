@@ -5,12 +5,13 @@ import nodium.group.backend.data.models.Notification;
 import nodium.group.backend.data.models.User;
 import nodium.group.backend.data.repository.NotificationRepository;
 import nodium.group.backend.data.repository.UserRepository;
-import nodium.group.backend.request.JobRequest;
+import nodium.group.backend.dto.request.JobRequest;
 import nodium.group.backend.service.interfaces.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 import static nodium.group.backend.data.enums.Role.PROVIDER;
 
@@ -28,10 +29,13 @@ public class BackendNotificationService implements NotificationService {
 
         providersInLocation.forEach(user -> sendNotification(user, jobRequest));
     }
-
     private boolean isProvider(User user) {
-        return user.getRole() != null && user.getRole().contains(PROVIDER) &&
-                user.getAddress() != null;
+        boolean hasRole = Optional.ofNullable(user.getRole()).isPresent();
+        boolean isProviderRole = Optional.ofNullable(user.getRole())
+                .map(role -> PROVIDER.equals(role.name()))
+                .orElse(false);
+        boolean hasAddress = Optional.ofNullable(user.getAddress()).isPresent();
+        return hasRole && isProviderRole && hasAddress;
     }
 
     private boolean isLocatedInLocation(User user, String location) {
