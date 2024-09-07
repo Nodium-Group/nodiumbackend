@@ -55,3 +55,7 @@ public class UserController {
                 .body(new ApiResponse(true,userService.updateAddress(request),now()));
     }
 }
+//todo:: find all jobs
+// find all providers near me
+//find allmy jobs
+//notifications

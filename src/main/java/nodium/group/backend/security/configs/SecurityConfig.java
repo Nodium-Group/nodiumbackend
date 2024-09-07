@@ -2,29 +2,29 @@ package nodium.group.backend.security.configs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import nodium.group.backend.data.enums.Role;
 import nodium.group.backend.security.filter.AuthenticationFilter;
 import nodium.group.backend.security.filter.AuthorizationFilter;
 import nodium.group.backend.security.filter.LogoutFilter;
-import nodium.group.backend.security.service.TokenService;
 import nodium.group.backend.service.interfaces.UserService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+import java.util.List;
 
 import static nodium.group.backend.data.enums.Role.PROVIDER;
 import static nodium.group.backend.data.enums.Role.USER;
-import static nodium.group.backend.utils.AppUtils.LOGIN_URL;
-import static nodium.group.backend.utils.AppUtils.PUBLIC_END_POINTS;
+import static nodium.group.backend.utils.AppUtils.*;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -47,7 +47,7 @@ public class SecurityConfig{
         return httpSecurity
                 .sessionManagement(session->session.sessionCreationPolicy(STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
+                .cors(cors->cors.configurationSource(corsSource()))
                 .authorizeHttpRequests(c->c.requestMatchers(POST,PUBLIC_END_POINTS).permitAll()
                         .requestMatchers("/api/v1/nodium/Users/**").hasAuthority(USER.name())
                         .requestMatchers("/api/v1/providers/**").hasAuthority(PROVIDER.name()))
@@ -55,5 +55,22 @@ public class SecurityConfig{
                 .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(new LogoutFilter(), AuthorizationFilter.class)
                 .build();
+    }
+    @Bean
+    public CorsFilter corsFilter() {
+        CorsConfigurationSource source = corsSource();
+        return new CorsFilter(source);
+    }
+
+    @Bean
+    public CorsConfigurationSource corsSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedOrigins(List.of(FRONTEND_URL,"http://localhost:8080"));
+        configuration.setAllowedMethods(List.of("*"));
+        configuration.setAllowedHeaders(List.of("*"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
