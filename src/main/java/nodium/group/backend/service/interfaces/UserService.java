@@ -1,5 +1,6 @@
 package nodium.group.backend.service.interfaces;
 
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import nodium.group.backend.data.enums.Role;
 import nodium.group.backend.data.models.User;
@@ -21,5 +22,6 @@ public interface UserService {
     List<User> findAllByRole(Role role);
     List<JobResponse> findAllJobsCreatedByUser(String email);
     List<NotificationResponse> getUserNotifications(Long userId);
+    void sendOTP(String reciepient) throws MessagingException;
     RegisterResponse updatePassword(UpdatePasswordRequest updatePassword);
 }

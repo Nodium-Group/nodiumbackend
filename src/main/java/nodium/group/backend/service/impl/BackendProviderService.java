@@ -1,5 +1,6 @@
 package nodium.group.backend.service.impl;
 
+import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import nodium.group.backend.data.enums.Role;
 import nodium.group.backend.data.models.User;
@@ -30,18 +31,20 @@ public class BackendProviderService implements ProviderService {
     @Autowired
     public BackendProviderService(UserRepository userRepository, ModelMapper modelMapper,
                                   PasswordEncoder encoder,BackendJobService jobService,
-                                  UserService userService){
+                                  UserService userService,MailService mailService){
         this.userRepository = userRepository;
         this.modelMapper= modelMapper;
         this.passwordEncoder= encoder;
         this.jobService = jobService;
         this.userService = userService;
+        this.mailService = mailService;
     }
     private final UserService userService;
     private final JobService jobService;
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
+    private final MailService mailService;
     @Override
     public RegisterResponse register(RegisterRequest request) {
         User user = User.builder().firstname(request.getFirstname()).
@@ -50,6 +53,10 @@ public class BackendProviderService implements ProviderService {
         validateMail(request.getEmail());
         user= userRepository.save(user);
         return modelMapper.map(user,RegisterResponse.class);
+    }
+    @Override
+    public void sendOTP(String reciepient) throws MessagingException {
+        mailService.sendOTP(reciepient);
     }
 
     @Override

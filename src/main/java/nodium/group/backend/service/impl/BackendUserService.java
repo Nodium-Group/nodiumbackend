@@ -1,5 +1,6 @@
 package nodium.group.backend.service.impl;
 
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import nodium.group.backend.data.enums.OrderStatus;
 import nodium.group.backend.data.enums.Role;
@@ -39,7 +40,7 @@ public class BackendUserService implements UserService {
     public BackendUserService(ModelMapper mapper, PasswordEncoder encoder, JobService service,
                               UserRepository repository, ReviewRepository reviewRepo,
                               NotificationService notificationService, OrderRepository orderRepo,
-                              NotificationRepository notificationRepo){
+                              NotificationRepository notificationRepo,MailService mailService){
         modelMapper= mapper;
         passwordEncoder= encoder;
         jobService = service;
@@ -48,6 +49,7 @@ public class BackendUserService implements UserService {
         orderRepository= orderRepo;
         notificationRepository= notificationRepo;
         this.notificationService= notificationService;
+        this.mailService= mailService;
     }
     @Override
     public RegisterResponse registerUser( RegisterRequest registerRequest) {
@@ -144,6 +146,10 @@ public class BackendUserService implements UserService {
         return userRepository.findAll().stream().filter(user -> user.getRole().name().equals(role.name())).toList();
     }
     @Override
+    public void sendOTP(String reciepient) throws MessagingException {
+        mailService.sendOTP(reciepient);
+    }
+    @Override
     public BookServiceResponse bookService(@Valid BookServiceRequest bookRequest) {
         CustomerOrder customerOrder = buildOrder(bookRequest);
         customerOrder = orderRepository.save(customerOrder);
@@ -183,6 +189,7 @@ public class BackendUserService implements UserService {
                 userRepository.findById(userId).get(),now(),false);
         notificationRepository.save(notification);
     }
+    private final MailService mailService;
     private final ReviewRepository reviewRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
