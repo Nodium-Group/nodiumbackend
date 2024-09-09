@@ -55,7 +55,7 @@ public class UserController {
                 .body(new ApiResponse(true,userService.updateAddress(request),now()));
     }
     @PostMapping("get-OTP/{email}")
-    public ResponseEntity<?> getOTP(String email){
+    public ResponseEntity<?> getOTP(@PathVariable("email") String email){
         return ResponseEntity.status(OK).body(new ApiResponse(true,"OTP sent Successfully",now()));
     }
 }
