@@ -23,6 +23,12 @@ public class ProviderController {
         return ResponseEntity.status(201)
                 .body(userService.register(request));
     }
+    @PostMapping("send_otp/{email}")
+    public ResponseEntity<?> sendOTP(@PathVariable("email") String email){
+        return ResponseEntity.status(OK)
+                .body(new ApiResponse(true,"OTP sent Successfully",now()));
+
+    }
     @GetMapping("getAllBooking/{id}")
     public ResponseEntity<?> getAllBookings(@PathVariable("id") Long id){
         return ResponseEntity.status(OK).body(userService.getAllBookings(id));
@@ -48,7 +54,7 @@ public class ProviderController {
                 .body(new ApiResponse(true, userService.updateAddress(request),now()));
     }
     @PostMapping("change-password")
-    public ResponseEntity<?> res(@RequestBody UpdatePasswordRequest request){
+    public ResponseEntity<?> resetPassword(@RequestBody UpdatePasswordRequest request){
         return ResponseEntity.status(OK)
                 .body(new ApiResponse(true,userService.updatePassword(request),now()));
     }
