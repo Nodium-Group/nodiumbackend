@@ -47,10 +47,12 @@ public class BackendProviderService implements ProviderService {
     private final MailService mailService;
     @Override
     public RegisterResponse register(RegisterRequest request) {
-        User user = User.builder().firstname(request.getFirstname()).
-                lastname(request.getLastname()).password(passwordEncoder.encode(request.getPassword()))
-                .role(PROVIDER).build();
         validateMail(request.getEmail());
+        User user = User.builder().firstname(request.getFirstname()).
+                lastname(request.getLastname())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(PROVIDER).build();
         user= userRepository.save(user);
         return modelMapper.map(user,RegisterResponse.class);
     }
