@@ -24,9 +24,9 @@ public class Review {
     @Setter(NONE)
     private LocalDateTime timeSaved;
     private String reviewContent;
-    @OneToOne
+    @ManyToOne
     private User reviewer;
-    @OneToOne
+    @ManyToOne
     private User reviewee;
     @PrePersist
     void persist(){
