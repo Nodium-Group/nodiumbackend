@@ -54,8 +54,8 @@ public class UserController {
         return ResponseEntity.status(OK)
                 .body(new ApiResponse(true,userService.updateAddress(request),now()));
     }
+    @PostMapping("get-OTP/{email}")
+    public ResponseEntity<?> getOTP(@PathVariable("email") String email){
+        return ResponseEntity.status(OK).body(new ApiResponse(true,"OTP sent Successfully",now()));
+    }
 }
-//todo:: find all jobs
-// find all providers near me
-//find allmy jobs
-//notifications

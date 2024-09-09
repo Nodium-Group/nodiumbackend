@@ -41,12 +41,12 @@ public class Configurations {
         return new ObjectMapper();
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 0 0 */2 * *")
     public void deleteAllTokens(){
         List<Tokens> allInvalidTokes = tokenRepository.findAll().stream().filter(Tokens::isBlackListed).toList();
         tokenRepository.deleteAll(allInvalidTokes);
     }
-    @Scheduled(cron = "0 0 0/2 * * *")
+    @Scheduled(cron = "0 30 0 */2 * *")
     public void deleteInvalidOtps(){
         List<OTP> uselessOtps = otpRepository.findAll().stream().filter(otp ->
                 Duration.between(otp.getTimeGenerated(),
