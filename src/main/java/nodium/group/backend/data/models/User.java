@@ -2,6 +2,7 @@ package nodium.group.backend.data.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nodium.group.backend.data.enums.Role;
@@ -18,6 +19,7 @@ import static org.hibernate.annotations.CascadeType.ALL;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class User {
     @Id
     @GeneratedValue(strategy = IDENTITY)

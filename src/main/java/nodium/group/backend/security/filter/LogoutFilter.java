@@ -26,7 +26,9 @@ public class LogoutFilter extends OncePerRequestFilter {
     @Autowired
     private TokenService tokenService;
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
         try {
             String url = request.getServletPath();
             if (LOGOUT_URL.equals(url)) {

@@ -21,6 +21,7 @@ public class AppUtils {
     public static String[] PUBLIC_END_POINTS = {REGISTER_URL,LOGIN_URL,
     "/api/v1/providers/register","/api/v1/nodium/logout"};
     public static String LOGOUT_URL = "/api/v1/nodium/logout";
+    public static String FRONTEND_URL= "*";
     public static void validateRegisterRequest(RegisterRequest request){
         validate(request.getEmail());
         validate(request.getPassword());

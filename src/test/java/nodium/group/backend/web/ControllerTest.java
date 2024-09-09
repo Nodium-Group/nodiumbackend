@@ -8,14 +8,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import static nodium.group.backend.utils.AppUtils.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -73,10 +74,11 @@ public class ControllerTest {
 
         String token = result.getResponse().getHeader("Authorization").substring(AUTH_HEADER_PREFIX.length());
         System.out.println("token = " + token);
+        String id =  result.getResponse().getContentAsString().substring(26,27);
         mockMvc.perform(post("/api/v1/nodium/Users/post-jobs")
                         .header(AUTHORIZATION, AUTH_HEADER_PREFIX +token)
                         .contentType(APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(new JobRequest(1L, "location",
+                        .content(objectMapper.writeValueAsString(new JobRequest(new BigInteger(id).longValue(), "location",
                                 "description","name",new BigDecimal("9000"),
                                 "REMOTE"))))
                 .andDo(print())
@@ -84,13 +86,13 @@ public class ControllerTest {
                 .andReturn();
     }
     @Test
-    void testProvidersCanRegister()throws Exception{
+    @Sql({"/db/truncate.sql"})
+    void testProvidersCanRegister()throws Exception {
         mockMvc.perform(post("/api/v1/providers/register")
-                .content(objectMapper.writeValueAsString(new RegisterRequest(
-                        "email@email.com","password","firstname","lastname")))
-                .contentType(APPLICATION_JSON_VALUE))
+                .content("{\"email\":\"email@email.com\",\"password\":\"password\",\"firstname\":\"firstname\",\"lastname\":\"lastname\"}")
+                        .contentType(APPLICATION_JSON))
+                .andDo(result -> System.out.println(result.getRequest().getHeaderNames()))
                 .andExpect(status().isCreated())
                 .andDo(print());
+        }
     }
-
-}
