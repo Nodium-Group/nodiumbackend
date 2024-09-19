@@ -1,0 +1,6 @@
+name: CICD/pipeline
+jobs:
+  on:
+    push:
+      branches:
+        -
