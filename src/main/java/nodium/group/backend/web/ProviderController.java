@@ -14,7 +14,7 @@ import static java.time.LocalDateTime.now;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping("/api/v1/providers/")
+@RequestMapping("/api/v1/nodium/providers/")
 public class ProviderController {
     @Autowired
     private BackendProviderService userService;

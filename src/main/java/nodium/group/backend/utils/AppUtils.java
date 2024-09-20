@@ -14,12 +14,14 @@ public class AppUtils {
     public static Integer SEVEN = 7;
     public static String AUTH_HEADER_PREFIX = "Bearer ";
     public static String LOGIN_URL = "/api/v1/nodium/login";
-    public static String REGISTER_URL = "/api/v1/nodium/Users/Register";
+    public static String REGISTER_URL = "/api/v1/nodium/users/register";
     public static String SECRET = "Our Application name is Nodium Backend";
-    public static List<String> PUBLIC_URLS = List.of(REGISTER_URL,LOGIN_URL,"/api/v1/providers/register");
-    public static String[] USER_END_POINTS = {"/api/v1/nodium/Users/post-jobs"};
+    public static List<String> PUBLIC_URLS = List.of(REGISTER_URL,LOGIN_URL,"/api/v1/nodium/providers/register");
+    public static String[] USER_END_POINTS = {"/api/v1/nodium/users/post-jobs"};
+
+
     public static String[] PUBLIC_END_POINTS = {REGISTER_URL,LOGIN_URL,
-    "/api/v1/providers/register","/api/v1/nodium/logout"};
+    "/api/v1/nodium/providers/register","/api/v1/nodium/logout"};
     public static String LOGOUT_URL = "/api/v1/nodium/logout";
     public static String FRONTEND_URL= "*";
     public static void validateRegisterRequest(RegisterRequest request){
