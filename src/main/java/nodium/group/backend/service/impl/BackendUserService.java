@@ -34,7 +34,6 @@ import static nodium.group.backend.exception.ExceptionMessages.*;
 import static nodium.group.backend.utils.AppUtils.validateRegisterRequest;
 
 @Component
-@Validated
 public class BackendUserService implements UserService {
     @Autowired
     public BackendUserService(ModelMapper mapper, PasswordEncoder encoder, JobService service,

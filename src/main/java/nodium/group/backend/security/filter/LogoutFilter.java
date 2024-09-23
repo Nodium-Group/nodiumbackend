@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import static javax.security.auth.callback.ConfirmationCallback.OK;
@@ -31,7 +32,7 @@ public class LogoutFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         try {
             String url = request.getServletPath();
-            if (LOGOUT_URL.equals(url)) {
+            if (List.of(LOGOUT_URL).contains(url) ||LOGOUT_URL.endsWith(url)) {
                 String token = request.getHeader(AUTHORIZATION).substring(AUTH_HEADER_PREFIX.length());
                 tokenService.blacklistToken(token);
                 response.getOutputStream().write(new ObjectMapper().writeValueAsString(

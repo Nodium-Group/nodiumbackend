@@ -43,34 +43,28 @@ public class SecurityConfig{
         authenticationFilter.setAuthenticationManager(manager);
         authenticationFilter.setFilterProcessesUrl(LOGIN_URL);
 
-
-        return httpSecurity
-                .sessionManagement(session->session.sessionCreationPolicy(STATELESS))
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors->cors.configurationSource(corsSource()))
-                .authorizeHttpRequests(c->c.requestMatchers(POST,PUBLIC_END_POINTS).permitAll()
-                        .requestMatchers("/api/v1/nodium/Users/**").hasAuthority(USER.name())
-                        .requestMatchers("/api/v1/providers/**").hasAuthority(PROVIDER.name()))
-                .addFilterAt(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(new LogoutFilter(), AuthorizationFilter.class)
-                .build();
+            return httpSecurity
+                    .cors(cors -> cors.configurationSource(corsSource()))
+                    .csrf(AbstractHttpConfigurer::disable)
+                    .authorizeHttpRequests(c -> c
+                            .requestMatchers(POST, PUBLIC_END_POINTS).permitAll()
+                            .requestMatchers("/api/v1/nodium/users/**").hasAuthority(USER.name())
+                            .requestMatchers("/api/v1/nodium/providers/**").hasAuthority(PROVIDER.name()))
+                    .addFilterAt(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
+                    .addFilterAfter(new LogoutFilter(), AuthorizationFilter.class)
+                    .build();
     }
-    @Bean
-    public CorsFilter corsFilter() {
-        CorsConfigurationSource source = corsSource();
-        return new CorsFilter(source);
-    }
-
     @Bean
     public CorsConfigurationSource corsSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(List.of(FRONTEND_URL,"http://localhost:8080"));
-        configuration.setAllowedMethods(List.of("*"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 }

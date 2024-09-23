@@ -14,14 +14,14 @@ import static java.time.LocalDateTime.now;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping("/api/v1/providers/")
+@RequestMapping("/api/v1/nodium/providers/")
 public class ProviderController {
     @Autowired
     private BackendProviderService userService;
     @PostMapping("register")
     public ResponseEntity<?> register(@RequestBody @Validated RegisterRequest request){
         return ResponseEntity.status(201)
-                .body(userService.register(request));
+                .body(new ApiResponse(true,userService.register(request),now()));
     }
     @PostMapping("send_otp/{email}")
     public ResponseEntity<?> sendOTP(@PathVariable("email") String email){
@@ -31,7 +31,7 @@ public class ProviderController {
     }
     @GetMapping("getAllBooking/{id}")
     public ResponseEntity<?> getAllBookings(@PathVariable("id") Long id){
-        return ResponseEntity.status(OK).body(userService.getAllBookings(id));
+        return ResponseEntity.status(OK).body(new ApiResponse(true,userService.getAllBookings(id),now()));
     }
     @PatchMapping("cancel-booking")
     public ResponseEntity<?> cancelBooking(@RequestBody CancelRequest cancelBooking){

@@ -15,12 +15,12 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping("/api/v1/nodium/Users/")
+@RequestMapping("/api/v1/nodium/users/")
 public class UserController {
     @Autowired
     private UserService userService;
-    @PostMapping("Register")
-    public ResponseEntity<?> register(@RequestBody @Valid RegisterRequest request){
+    @PostMapping("register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request){
         return ResponseEntity.status(CREATED).body(
                 new ApiResponse(true, userService.registerUser(request), now()));
     }
