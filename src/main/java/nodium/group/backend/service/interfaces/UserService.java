@@ -11,9 +11,9 @@ import org.springframework.validation.annotation.Validated;
 import java.util.List;
 
 public interface UserService {
-    RegisterResponse registerUser(@Validated RegisterRequest request);
-    BookServiceResponse bookService(@Validated BookServiceRequest request);
-    BookServiceResponse cancelBooking(@Validated CancelRequest cancelRequest);
+    RegisterResponse registerUser( RegisterRequest request);
+    BookServiceResponse bookService( BookServiceRequest request);
+    BookServiceResponse cancelBooking(CancelRequest cancelRequest);
     void deleteJob(DeleteJobRequest deleteJobRquest);
     RegisterResponse updateAddress(UpdateAddressRequest updateRequest);
     ReviewResponse dropReview(ReviewRequest request);

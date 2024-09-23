@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Arrays;
 import java.util.Map;
 
-import static nodium.group.backend.exception.ExceptionMessages.INVALID_DETAILS;
-import static nodium.group.backend.exception.ExceptionMessages.SOMETHING_WENT_WRONG;
+import static nodium.group.backend.exception.ExceptionMessages.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
@@ -24,27 +23,27 @@ public class BackendHandler {
     public ResponseEntity<?> BadCredentialsException(BadCredentialsException exception){
         return ResponseEntity.status(BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of("Error",exception.getMessage(),"success",false));
+                .body(Map.of("Error",BAD_CREDENTIALS.getMessage(),"success",false));
     }
     @ExceptionHandler(BackEndException.class)
     @ResponseBody
-    public ResponseEntity<?> handleEventException(BackEndException exception){
+    public ResponseEntity<?> backEndException(BackEndException exception){
         return ResponseEntity.status(BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Map.of("Error",exception.getMessage(),"success",false));
     }
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseBody
-    public ResponseEntity<?> handleEventException(DataIntegrityViolationException exception){
+    public ResponseEntity<?> dataIntegrityViolation(DataIntegrityViolationException exception){
         return ResponseEntity.status(BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Map.of("Error",INVALID_DETAILS.getMessage(),"success",false));
     }
     @ExceptionHandler(Exception.class)
     @ResponseBody
-    public ResponseEntity<?> handleEventException(Exception exception){
+        public ResponseEntity<?> exceptionHandler(Exception exception){
         return ResponseEntity.status(BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of("Error", Arrays.toString(exception.getStackTrace()),"success",false));
+                .body(Map.of("Error",exception.getMessage(),"success",false));
     }
 }

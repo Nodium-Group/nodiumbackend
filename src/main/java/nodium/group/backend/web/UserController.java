@@ -20,7 +20,7 @@ public class UserController {
     @Autowired
     private UserService userService;
     @PostMapping("register")
-    public ResponseEntity<?> register(@RequestBody @Valid RegisterRequest request){
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request){
         return ResponseEntity.status(CREATED).body(
                 new ApiResponse(true, userService.registerUser(request), now()));
     }
