@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nodium.group.backend.data.enums.Role;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -11,4 +12,5 @@ import lombok.Setter;
 @Getter
 public class LoginResponse {
     private RegisterResponse response;
+    private Role role;
 }

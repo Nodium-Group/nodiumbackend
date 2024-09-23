@@ -69,7 +69,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         response.addHeader(AUTHORIZATION,String.format("%s %s",AUTH_HEADER_PREFIX,token));
         response.setContentType(APPLICATION_JSON_VALUE);
         objectMapper.writeValue(response.getOutputStream(),new ApiResponse(true,
-                new LoginResponse(modelMapper.map(user, RegisterResponse.class)),now()));
+                new LoginResponse(modelMapper.map(user, RegisterResponse.class),user.getRole()),now()));
         response.flushBuffer();
     }
     private String getToken(List<String> roles) {
