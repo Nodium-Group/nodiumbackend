@@ -6,13 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nodium.group.backend.data.enums.Role;
-import org.hibernate.annotations.Cascade;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import static jakarta.persistence.GenerationType.IDENTITY;
-import static org.hibernate.annotations.CascadeType.ALL;
 
 @Data
 @Table(name="users")
@@ -22,7 +15,7 @@ import static org.hibernate.annotations.CascadeType.ALL;
 @Builder
 public class User {
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String firstname;
     private String password;

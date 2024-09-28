@@ -1,16 +1,16 @@
-package nodium.group.backend.security.service;
+package nodium.group.backend.security.securedService;
 
-import nodium.group.backend.security.model.SecuredUser;
+import lombok.AllArgsConstructor;
+import nodium.group.backend.security.models.SecuredUser;
 import nodium.group.backend.service.interfaces.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 @Component
+@AllArgsConstructor
 public class SecuredUserService implements UserDetailsService {
-    @Autowired
     private UserService userService;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

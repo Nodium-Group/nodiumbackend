@@ -1,14 +1,13 @@
 package nodium.group.backend.data.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.Constraint;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import static lombok.AccessLevel.NONE;
 import static java.time.LocalDateTime.now;
 
 @Entity
@@ -28,11 +27,7 @@ public class Service {
         @ManyToOne(optional = true , cascade = CascadeType.ALL)
         private User poster;
         private String location;
-        @Setter(NONE)
-        private LocalDateTime timeStamp;
-        @PrePersist
-        private void setTimeStamp(){
-                timeStamp= now();
-        }
+        @Setter(AccessLevel.NONE)
+        private LocalDateTime timeStamp= now();
         private boolean isDeleted;
 }

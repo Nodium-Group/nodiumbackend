@@ -2,9 +2,7 @@ package nodium.group.backend.config;
 
 import nodium.group.backend.data.models.OTP;
 import nodium.group.backend.data.repository.OTPRepository;
-import nodium.group.backend.data.repository.UserRepository;
 import nodium.group.backend.service.interfaces.UserService;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;

@@ -1,12 +1,10 @@
 package nodium.group.backend.service.interfaces;
 
 import jakarta.mail.MessagingException;
-import jakarta.validation.Valid;
 import nodium.group.backend.data.enums.Role;
 import nodium.group.backend.data.models.User;
 import nodium.group.backend.dto.request.*;
 import nodium.group.backend.dto.out.*;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 

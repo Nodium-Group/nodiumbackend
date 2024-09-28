@@ -1,12 +1,7 @@
 package nodium.group.backend.data.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import static jakarta.persistence.GenerationType.AUTO;
+import lombok.*;
 
 @Table
 @Entity
@@ -14,9 +9,10 @@ import static jakarta.persistence.GenerationType.AUTO;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class Tokens {
     @Id
-    @GeneratedValue(strategy = AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long tokenId;
     private String token;
     @OneToOne

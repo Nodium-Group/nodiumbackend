@@ -1,61 +1,61 @@
 package nodium.group.backend.web;
 
-import jakarta.validation.Valid;
+
 import nodium.group.backend.dto.out.ApiResponse;
 import nodium.group.backend.dto.request.*;
 import nodium.group.backend.service.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
 import static java.time.LocalDateTime.now;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping("/api/v1/nodium/users/")
+@RequestMapping("/api/v1/nodium/")
 public class UserController {
     @Autowired
     private UserService userService;
-    @PostMapping("register")
+    @PostMapping("users/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request){
-        return ResponseEntity.status(CREATED).body(
-                new ApiResponse(true, userService.registerUser(request), now()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new ApiResponse(true, userService.registerUser(request), LocalDateTime.now()));
     }
-    @PostMapping("post-jobs")
+    @PostMapping("users/post-jobs")
     public ResponseEntity<?> postJobs(@RequestBody JobRequest request) {
-        return ResponseEntity.status(OK)
-                .body(new ApiResponse(true,userService.postJob(request),now()));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(true,userService.postJob(request), LocalDateTime.now()));
     }
-    @PatchMapping("cancel-booking")
+    @PatchMapping("users/cancel-booking")
     public ResponseEntity<?> cancelBooking(@RequestBody CancelRequest cancelRequest){
         return ResponseEntity.status(200).body(new ApiResponse(true,
-                userService.cancelBooking(cancelRequest),now()));
+                userService.cancelBooking(cancelRequest), LocalDateTime.now()));
     }
-    @PatchMapping("book-a-service")
+    @PatchMapping("users/book-a-service")
     public ResponseEntity<?> cancelBooking(@RequestBody BookServiceRequest bookServiceRequest){
         return ResponseEntity.status(200).body(new ApiResponse(true,
-                userService.bookService(bookServiceRequest),now()));
+                userService.bookService(bookServiceRequest), LocalDateTime.now()));
     }
     @PatchMapping("update-password")
     public ResponseEntity<?> updatePassword(UpdatePasswordRequest updatePassword){
-        return ResponseEntity.status(OK)
-                .body(new ApiResponse(true,userService.updatePassword(updatePassword),now()));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(true,userService.updatePassword(updatePassword), LocalDateTime.now()));
     }
-    @PostMapping("drop-review")
+    @PostMapping("users/drop-review")
     public ResponseEntity<?> review(ReviewRequest request){
-        return ResponseEntity.status(OK).
-                body(new ApiResponse(true,userService.dropReview(request),now()));
+        return ResponseEntity.status(HttpStatus.OK).
+                body(new ApiResponse(true,userService.dropReview(request), LocalDateTime.now()));
     }
-    @PatchMapping("update-address")
+    @PatchMapping("users/update-address")
     public ResponseEntity<?> updateAddress(UpdateAddressRequest request){
-        return ResponseEntity.status(OK)
-                .body(new ApiResponse(true,userService.updateAddress(request),now()));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(true,userService.updateAddress(request), LocalDateTime.now()));
     }
-    @PostMapping("get-OTP/{email}")
+    @PostMapping("users/get-OTP/{email}")
     public ResponseEntity<?> getOTP(@PathVariable("email") String email){
-        return ResponseEntity.status(OK).body(new ApiResponse(true,"OTP sent Successfully",now()));
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true,"OTP sent Successfully", LocalDateTime.now()));
     }
+
 }

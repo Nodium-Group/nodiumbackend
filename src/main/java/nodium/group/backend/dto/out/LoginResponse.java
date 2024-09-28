@@ -10,7 +10,9 @@ import nodium.group.backend.data.enums.Role;
 @NoArgsConstructor
 @Setter
 @Getter
+
 public class LoginResponse {
     private RegisterResponse response;
     private Role role;
+    private String token;
 }

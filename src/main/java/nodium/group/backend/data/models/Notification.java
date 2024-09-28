@@ -5,8 +5,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.NONE;
 import static java.time.LocalDateTime.now;
 
 @Entity
@@ -17,17 +15,14 @@ import static java.time.LocalDateTime.now;
 @Builder
 public class Notification {
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String purpose;
     private String description;
     @ManyToOne
     private User user;
-    @Setter(NONE)
-    private LocalDateTime timeStamp;
+    @Setter(AccessLevel.NONE)
+    private LocalDateTime timeStamp = now();
     private boolean isSeen;
-    @PrePersist
-    private void setTimeStamp(){
-        timeStamp= now();
-    }
+
 }

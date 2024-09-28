@@ -3,59 +3,58 @@ package nodium.group.backend.web;
 import nodium.group.backend.dto.out.ApiResponse;
 import nodium.group.backend.dto.request.*;
 import nodium.group.backend.service.impl.BackendProviderService;
-import nodium.group.backend.service.impl.BackendUserService;
-import nodium.group.backend.service.interfaces.ProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 import static java.time.LocalDateTime.now;
-import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping("/api/v1/nodium/providers/")
+@RequestMapping("/api/v1/nodium/")
 public class ProviderController {
     @Autowired
     private BackendProviderService userService;
-    @PostMapping("register")
-    public ResponseEntity<?> register(@RequestBody @Validated RegisterRequest request){
-        return ResponseEntity.status(201)
-                .body(new ApiResponse(true,userService.register(request),now()));
+    @PostMapping("providers/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request){
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse(true,userService.register(request), LocalDateTime.now()));
     }
-    @PostMapping("send_otp/{email}")
+    @PostMapping("providers/send_otp/{email}")
     public ResponseEntity<?> sendOTP(@PathVariable("email") String email){
-        return ResponseEntity.status(OK)
-                .body(new ApiResponse(true,"OTP sent Successfully",now()));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(true,"OTP sent Successfully", LocalDateTime.now()));
 
     }
-    @GetMapping("getAllBooking/{id}")
+    @GetMapping("providers/getAllBooking/{id}")
     public ResponseEntity<?> getAllBookings(@PathVariable("id") Long id){
-        return ResponseEntity.status(OK).body(new ApiResponse(true,userService.getAllBookings(id),now()));
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true,userService.getAllBookings(id), LocalDateTime.now()));
     }
-    @PatchMapping("cancel-booking")
+    @PatchMapping("providers/cancel-booking")
     public ResponseEntity<?> cancelBooking(@RequestBody CancelRequest cancelBooking){
-        return ResponseEntity.status(OK)
-                .body(new ApiResponse(true,userService.cancelBooking(cancelBooking),now()));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(true,userService.cancelBooking(cancelBooking), LocalDateTime.now()));
     }
-    @PostMapping("book-service")
+    @PostMapping("providers/book-service")
     public ResponseEntity<?> response(@RequestBody BookServiceRequest request){
-        return ResponseEntity.status(OK)
-                .body(new ApiResponse(true, userService.bookService(request),now()));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(true, userService.bookService(request), LocalDateTime.now()));
     }
-    @GetMapping("get-notifications/{id}")
+    @GetMapping("providers/get-notifications/{id}")
     public ResponseEntity<?> getAllNotifications(@PathVariable("id") Long id){
-        return ResponseEntity.status(OK)
-                .body(new ApiResponse(true,userService.getUserNotifications(id),now()));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(true,userService.getUserNotifications(id), LocalDateTime.now()));
     }
-    @PatchMapping("update-address")
+    @PatchMapping("providers/update-address")
     public ResponseEntity<?> updateAddress(@RequestBody UpdateAddressRequest request){
-        return ResponseEntity.status(OK)
-                .body(new ApiResponse(true, userService.updateAddress(request),now()));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(true, userService.updateAddress(request), LocalDateTime.now()));
     }
-    @PostMapping("change-password")
+    @PostMapping("providers/change-password")
     public ResponseEntity<?> resetPassword(@RequestBody UpdatePasswordRequest request){
-        return ResponseEntity.status(OK)
-                .body(new ApiResponse(true,userService.updatePassword(request),now()));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(true,userService.updatePassword(request), LocalDateTime.now()));
     }
 }

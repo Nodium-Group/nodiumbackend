@@ -1,15 +1,11 @@
 package nodium.group.backend.data.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.NONE;
+import static java.time.LocalDateTime.now;
 
 @Setter
 @Getter
@@ -19,19 +15,16 @@ import static lombok.AccessLevel.NONE;
 @Entity
 public class Review {
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Setter(NONE)
-    private LocalDateTime timeSaved;
+    @Setter(AccessLevel.NONE)
+    private LocalDateTime timeSaved = now();
     private String reviewContent;
     @ManyToOne
     private User reviewer;
     @ManyToOne
     private User reviewee;
-    @PrePersist
-    void persist(){
-        timeSaved=LocalDateTime.now();
-    }
+
 
 
 }

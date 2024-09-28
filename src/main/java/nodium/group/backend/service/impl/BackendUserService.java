@@ -1,5 +1,6 @@
 package nodium.group.backend.service.impl;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import nodium.group.backend.data.enums.OrderStatus;
@@ -10,28 +11,25 @@ import nodium.group.backend.data.repository.OrderRepository;
 import nodium.group.backend.dto.request.*;
 import nodium.group.backend.dto.out.*;
 import nodium.group.backend.exception.BackEndException;
-import nodium.group.backend.data.repository.ReviewRepository;
+import nodium.group.backend.exception.ExceptionMessages;
 import nodium.group.backend.service.interfaces.JobService;
 import nodium.group.backend.service.interfaces.NotificationService;
 import nodium.group.backend.service.interfaces.UserService;
+import nodium.group.backend.data.repository.ReviewRepository;
 import nodium.group.backend.data.repository.UserRepository;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
 import static nodium.group.backend.data.enums.Role.USER;
-import static nodium.group.backend.exception.ExceptionMessages.*;
-import static nodium.group.backend.utils.AppUtils.validateRegisterRequest;
 
 @Component
 public class BackendUserService implements UserService {
@@ -39,7 +37,7 @@ public class BackendUserService implements UserService {
     public BackendUserService(ModelMapper mapper, PasswordEncoder encoder, JobService service,
                               UserRepository repository, ReviewRepository reviewRepo,
                               NotificationService notificationService, OrderRepository orderRepo,
-                              NotificationRepository notificationRepo,MailService mailService){
+                              NotificationRepository notificationRepo, MailService mailService){
         modelMapper= mapper;
         passwordEncoder= encoder;
         jobService = service;
@@ -62,7 +60,7 @@ public class BackendUserService implements UserService {
             return modelMapper.map(user, RegisterResponse.class);
         }
         catch(DataIntegrityViolationException | ConstraintViolationException error){
-            throw new BackEndException(EMAIL_ALREADY_EXIST.getMessage());
+            throw new BackEndException(ExceptionMessages.EMAIL_ALREADY_EXIST.getMessage());
         }
     }
 
@@ -78,7 +76,7 @@ public class BackendUserService implements UserService {
     @Override
     public User getUserByEmail(String username) {
         return userRepository.findByEmailIgnoreCase(username).
-                orElseThrow(()->new BackEndException(INVALID_DETAILS.getMessage()));
+                orElseThrow(()->new BackEndException(ExceptionMessages.INVALID_DETAILS_PROVIDED.getMessage()));
     }
     @Override
     public ReviewResponse dropReview(ReviewRequest request) {
@@ -101,7 +99,7 @@ public class BackendUserService implements UserService {
     @Override
     public BookServiceResponse cancelBooking(@Valid CancelRequest cancelRequest) {
         CustomerOrder order = orderRepository.findById(cancelRequest.getOrderId()).get();
-        order.setTimeUpdated(now());
+        order.setTimeUpdated(LocalDateTime.now());
         order.setStatus(OrderStatus.TERMINATED);
         order =orderRepository.save(order);
         notifyUserAndProvider(order,cancelRequest.getReason());
@@ -181,13 +179,26 @@ public class BackendUserService implements UserService {
     }
     private void validateMail(String email){
         if(userRepository.findByEmailIgnoreCase(email).isPresent())
-            throw new DataIntegrityViolationException(EMAIL_ALREADY_EXIST.getMessage());
+            throw new DataIntegrityViolationException(ExceptionMessages.EMAIL_ALREADY_EXIST.getMessage());
     }
     private void notifyUser(Long userId,String description,String purpose){
         var notification = new Notification(null,purpose,description,
-                userRepository.findById(userId).get(),now(),false);
+                userRepository.findById(userId).get(), LocalDateTime.now(),false);
         notificationRepository.save(notification);
     }
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    public void updateTokenLength() {
+        String sql = "ALTER TABLE tokens ALTER COLUMN token TYPE character varying(512)";
+        jdbcTemplate.execute(sql);
+    }
+
+    @PostConstruct
+    public void updateDataBase() {
+        updateTokenLength();
+    }
+
     private final MailService mailService;
     private final ReviewRepository reviewRepository;
     private final ModelMapper modelMapper;

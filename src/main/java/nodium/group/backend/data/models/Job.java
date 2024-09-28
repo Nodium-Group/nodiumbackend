@@ -9,10 +9,9 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import static jakarta.persistence.FetchType.EAGER;
-import static jakarta.persistence.FetchType.LAZY;
 import static java.time.LocalDateTime.now;
 import static lombok.AccessLevel.NONE;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -27,14 +26,11 @@ public class Job {
     private String description;
     private BigDecimal amount;
     private String category;
-    @ManyToOne(optional = true ,fetch = LAZY)
+    @ManyToOne(optional = true ,fetch = FetchType.LAZY)
     @JoinColumn(name="job_creator")
     private User poster;
     private String location;
     @Setter(NONE)
-    private LocalDateTime timeStamp;
-    @PrePersist
-    private void setTimeStamp(){
-        timeStamp= now();
-    }
+    private LocalDateTime timeStamp = now();
+
 }

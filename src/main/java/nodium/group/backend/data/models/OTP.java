@@ -8,8 +8,6 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-import static jakarta.persistence.GenerationType.AUTO;
-
 @Table
 @Entity
 @Setter
@@ -18,7 +16,7 @@ import static jakarta.persistence.GenerationType.AUTO;
 @NoArgsConstructor
 public class OTP {
     @Id
-    @GeneratedValue(strategy = AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String pin;
     @OneToOne

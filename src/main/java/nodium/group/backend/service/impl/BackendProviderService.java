@@ -8,21 +8,17 @@ import nodium.group.backend.data.repository.UserRepository;
 import nodium.group.backend.dto.out.*;
 import nodium.group.backend.dto.request.*;
 import nodium.group.backend.exception.BackEndException;
+import nodium.group.backend.exception.ExceptionMessages;
 import nodium.group.backend.service.interfaces.JobService;
 import nodium.group.backend.service.interfaces.ProviderService;
 import nodium.group.backend.service.interfaces.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
-
-import static nodium.group.backend.data.enums.Role.PROVIDER;
-import static nodium.group.backend.exception.ExceptionMessages.EMAIL_ALREADY_EXIST;
 
 @Service
 @Slf4j
@@ -30,8 +26,8 @@ import static nodium.group.backend.exception.ExceptionMessages.EMAIL_ALREADY_EXI
 public class BackendProviderService implements ProviderService {
     @Autowired
     public BackendProviderService(UserRepository userRepository, ModelMapper modelMapper,
-                                  PasswordEncoder encoder,BackendJobService jobService,
-                                  UserService userService,MailService mailService){
+                                  PasswordEncoder encoder, BackendJobService jobService,
+                                  UserService userService, MailService mailService){
         this.userRepository = userRepository;
         this.modelMapper= modelMapper;
         this.passwordEncoder= encoder;
@@ -52,7 +48,7 @@ public class BackendProviderService implements ProviderService {
                 lastname(request.getLastname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(PROVIDER).build();
+                .role(Role.PROVIDER).build();
         user= userRepository.save(user);
         return modelMapper.map(user,RegisterResponse.class);
     }
@@ -69,7 +65,7 @@ public class BackendProviderService implements ProviderService {
 
     private void validateMail(String email){
         if(userRepository.findByEmailIgnoreCase(email).isPresent())
-            throw new BackEndException(EMAIL_ALREADY_EXIST.getMessage());
+            throw new BackEndException(ExceptionMessages.EMAIL_ALREADY_EXIST.getMessage());
     }
 
     public RegisterResponse registerUser(RegisterRequest request) {

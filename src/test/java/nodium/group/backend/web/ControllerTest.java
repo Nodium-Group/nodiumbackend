@@ -42,10 +42,10 @@ public class ControllerTest {
     @Test
     @Sql({"/db/truncate.sql"})
     void testUserCanRegisterAndLogin()throws Exception{
-        mockMvc.perform(post("/api/v1/nodium/Users/Register")
+        mockMvc.perform(post(REGISTER_URL)
                         .contentType(APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new RegisterRequest("email@email.com",
-                                "Password","first","last"))))
+                                "Password","first","lasl,t"))))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print());
         mockMvc.perform(post(LOGIN_URL)
@@ -57,26 +57,22 @@ public class ControllerTest {
     @Test
     @Sql({"/db/truncate.sql"})
     void testUserCanPostJobs() throws Exception{
-       var result =  mockMvc.perform(post("/api/v1/nodium/Users/Register")
+       var result =  mockMvc.perform(post(REGISTER_URL)
                         .contentType(APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new RegisterRequest("email@email.com",
                                 "Password","first","last"))))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print())
                 .andReturn();
-       result = mockMvc.perform(post("/api/v1/nodium/login")
+       result = mockMvc.perform(post(REGISTER_URL)
                         .contentType(APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(new LoginRequest(
-                                "email@email.com","Password"))))
+                        .content(objectMapper.writeValueAsString(new LoginRequest("email@email.com","Password"))))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print())
                 .andReturn();
-
-        String token = result.getResponse().getHeader("Authorization").substring(AUTH_HEADER_PREFIX.length());
-        System.out.println("token = " + token);
         String id =  result.getResponse().getContentAsString().substring(26,27);
-        mockMvc.perform(post("/api/v1/nodium/Users/post-jobs")
-                        .header(AUTHORIZATION, AUTH_HEADER_PREFIX +token)
+        mockMvc.perform(post("/api/v1/nodium/users/post-jobs")
+                        .header(AUTHORIZATION, AUTH_HEADER_PREFIX)
                         .contentType(APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new JobRequest(new BigInteger(id).longValue(), "location",
                                 "description","name",new BigDecimal("9000"),
@@ -88,7 +84,7 @@ public class ControllerTest {
     @Test
     @Sql({"/db/truncate.sql"})
     void testProvidersCanRegister()throws Exception {
-        mockMvc.perform(post("/api/v1/providers/register")
+        mockMvc.perform(post(REGISTER_URL)
                 .content("{\"email\":\"email@email.com\",\"password\":\"password\",\"firstname\":\"firstname\",\"lastname\":\"lastname\"}")
                         .contentType(APPLICATION_JSON))
                 .andDo(result -> System.out.println(result.getRequest().getHeaderNames()))
