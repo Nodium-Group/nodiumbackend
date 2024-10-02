@@ -72,8 +72,7 @@ public class BackendUserService implements UserService {
         user=userRepository.save(user);
         var addressAdded = modelMapper.map(user.getAddress(), AddressResponse.class);
         return new RegisterResponse(user.getId(),user.getFirstname(),user.getLastname(),user.getEmail(),addressAdded);
-    }
-    @Override
+    }@Override
     public User getUserByEmail(String username) {
         return userRepository.findByEmailIgnoreCase(username).
                 orElseThrow(()->new BackEndException(ExceptionMessages.INVALID_DETAILS_PROVIDED.getMessage()));
