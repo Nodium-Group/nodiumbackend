@@ -11,13 +11,12 @@ import lombok.*;
 @ToString
 @Builder
 public class UpdateAddressRequest {
-    @Pattern(regexp = "//d+")
-    private String houseNumber;
     @NotBlank
     private String street;
     @NotBlank
-    private String lga;
-    @NotBlank
     private String state;
     private String email;
+    private String nationality;
+    private String stateOfOrigin;
+    private String phoneNumber;
 }

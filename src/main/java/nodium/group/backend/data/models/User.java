@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nodium.group.backend.data.enums.Role;
 
+import static jakarta.persistence.CascadeType.ALL;
+
 @Data
 @Table(name="users")
 @Entity
@@ -24,6 +26,10 @@ public class User {
     private String email;
     @Enumerated(EnumType.STRING)
     private Role role;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = ALL)
     private Address address;
+    @OneToOne(cascade = ALL)
+    private Details details;
+    @OneToOne(cascade = ALL)
+    private Links link;
 }

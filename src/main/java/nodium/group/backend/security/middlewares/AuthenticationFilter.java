@@ -41,6 +41,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import static nodium.group.backend.exception.ExceptionMessages.INVALID_DETAILS;
 import static nodium.group.backend.exception.ExceptionMessages.SOMETHING_WENT_WRONG;
 import static nodium.group.backend.utils.AppUtils.*;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
@@ -81,6 +82,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         log.info("Persisting token -> {}",tokenSaving);
         log.info("Email := {}",authResult.getPrincipal());
         log.info("Password := {}",authResult.getCredentials());
+        response.setHeader(AUTHORIZATION,String.format("Bearer %s",token));
         ApiResponse apiResponse = new ApiResponse(true,new LoginResponse(
                 new ModelMapper().map(user, RegisterResponse.class),user.getRole(),token),now());
         response.getOutputStream().write(mapper.writeValueAsBytes(apiResponse));

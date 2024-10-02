@@ -36,7 +36,8 @@ public class AuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (!Arrays.stream(PUBLIC_END_POINTS).anyMatch(r->r.equals(request.getRequestURI()))){
             log.info("Authorization starts");
-            String token = request.getHeader(AUTHORIZATION);
+            String token = request.getHeader(AUTHORIZATION).
+                    substring(AUTH_HEADER_PREFIX.length()).strip();
             if(isValid(token))
                 verifyToken(token);
         }

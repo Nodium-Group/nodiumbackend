@@ -1,6 +1,7 @@
 package nodium.group.backend.web;
 
 
+import nodium.group.backend.data.models.Details;
 import nodium.group.backend.dto.out.ApiResponse;
 import nodium.group.backend.dto.request.*;
 import nodium.group.backend.service.interfaces.UserService;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 
 import static java.time.LocalDateTime.now;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/api/v1/nodium/")
@@ -25,7 +27,7 @@ public class UserController {
     }
     @PostMapping("users/post-jobs")
     public ResponseEntity<?> postJobs(@RequestBody JobRequest request) {
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(OK)
                 .body(new ApiResponse(true,userService.postJob(request), LocalDateTime.now()));
     }
     @PatchMapping("users/cancel-booking")
@@ -40,22 +42,26 @@ public class UserController {
     }
     @PatchMapping("update-password")
     public ResponseEntity<?> updatePassword(UpdatePasswordRequest updatePassword){
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(OK)
                 .body(new ApiResponse(true,userService.updatePassword(updatePassword), LocalDateTime.now()));
     }
     @PostMapping("users/drop-review")
     public ResponseEntity<?> review(ReviewRequest request){
-        return ResponseEntity.status(HttpStatus.OK).
+        return ResponseEntity.status(OK).
                 body(new ApiResponse(true,userService.dropReview(request), LocalDateTime.now()));
     }
-    @PatchMapping("users/update-address")
+    @PutMapping("users/update-address")
     public ResponseEntity<?> updateAddress(UpdateAddressRequest request){
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(OK)
                 .body(new ApiResponse(true,userService.updateAddress(request), LocalDateTime.now()));
     }
     @PostMapping("users/get-OTP/{email}")
     public ResponseEntity<?> getOTP(@PathVariable("email") String email){
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true,"OTP sent Successfully", LocalDateTime.now()));
+        return ResponseEntity.status(OK).body(new ApiResponse(true,"OTP sent Successfully", LocalDateTime.now()));
     }
-
+    @PostMapping("users/submit_details")
+    public ResponseEntity<?> updateDetails(@RequestBody DetailsRequest details){
+        return ResponseEntity.status(OK).
+                body(new ApiResponse(true, userService.updateDetails(details),now()));
+    }
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 
 import static java.time.LocalDateTime.now;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/api/v1/nodium/")
@@ -24,37 +25,42 @@ public class ProviderController {
     }
     @PostMapping("providers/send_otp/{email}")
     public ResponseEntity<?> sendOTP(@PathVariable("email") String email){
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(OK)
                 .body(new ApiResponse(true,"OTP sent Successfully", LocalDateTime.now()));
 
     }
     @GetMapping("providers/getAllBooking/{id}")
     public ResponseEntity<?> getAllBookings(@PathVariable("id") Long id){
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true,userService.getAllBookings(id), LocalDateTime.now()));
+        return ResponseEntity.status(OK).body(new ApiResponse(true,userService.getAllBookings(id), LocalDateTime.now()));
     }
     @PatchMapping("providers/cancel-booking")
     public ResponseEntity<?> cancelBooking(@RequestBody CancelRequest cancelBooking){
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(OK)
                 .body(new ApiResponse(true,userService.cancelBooking(cancelBooking), LocalDateTime.now()));
     }
     @PostMapping("providers/book-service")
     public ResponseEntity<?> response(@RequestBody BookServiceRequest request){
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(OK)
                 .body(new ApiResponse(true, userService.bookService(request), LocalDateTime.now()));
     }
     @GetMapping("providers/get-notifications/{id}")
     public ResponseEntity<?> getAllNotifications(@PathVariable("id") Long id){
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(OK)
                 .body(new ApiResponse(true,userService.getUserNotifications(id), LocalDateTime.now()));
     }
     @PatchMapping("providers/update-address")
     public ResponseEntity<?> updateAddress(@RequestBody UpdateAddressRequest request){
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(OK)
                 .body(new ApiResponse(true, userService.updateAddress(request), LocalDateTime.now()));
     }
     @PostMapping("providers/change-password")
     public ResponseEntity<?> resetPassword(@RequestBody UpdatePasswordRequest request){
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(OK)
                 .body(new ApiResponse(true,userService.updatePassword(request), LocalDateTime.now()));
+    }
+    @GetMapping("providers/getReviews/{id}")
+    public ResponseEntity<?> getReviews(@PathVariable("id") Long id){
+        return ResponseEntity.status(OK)
+                .body(new ApiResponse(true,userService.getAllReviews(id),now()));
     }
 }

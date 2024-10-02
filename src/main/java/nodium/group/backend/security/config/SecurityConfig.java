@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .addFilterAt(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(c -> c.requestMatchers(POST, PUBLIC_END_POINTS).permitAll()
-                                            .requestMatchers("/api/v1/nodium/users/**").hasAuthority(USER.name())
+                                            .requestMatchers("/api/v1/nodium/users/**").hasAnyAuthority(USER.name(),PROVIDER.name())
                                             .requestMatchers("/api/v1/nodium/providers/**").hasAuthority(PROVIDER.name())
                                             .anyRequest().authenticated())
                 .sessionManagement(c -> c.sessionCreationPolicy(STATELESS))

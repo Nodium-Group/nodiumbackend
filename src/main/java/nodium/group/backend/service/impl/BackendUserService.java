@@ -137,6 +137,13 @@ public class BackendUserService implements UserService {
         return new RegisterResponse(user.getId(),user.getFirstname(),user.getLastname(),user.getEmail()
                                     ,modelMapper.map(user.getAddress(),AddressResponse.class));
     }
+    @Override
+    public RegisterResponse updateDetails(DetailsRequest details) {
+        User user =  userRepository.findById(details.getId()).get();
+        user.setDetails(modelMapper.map(details,Details.class));
+        user = userRepository.save(user);
+        return modelMapper.map(user,RegisterResponse.class);
+    }
 
     @Override
     public List<User> findAllByRole(Role role){

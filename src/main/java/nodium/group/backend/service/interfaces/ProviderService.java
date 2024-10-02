@@ -11,4 +11,5 @@ public interface ProviderService {
     RegisterResponse register(@Validated RegisterRequest request);
     void sendOTP(String reciepient) throws MessagingException;
     List<?> getAllBookings(Long id);
+    List<?> getAllReviews(Long id);
 }

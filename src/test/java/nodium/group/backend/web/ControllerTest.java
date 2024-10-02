@@ -34,7 +34,8 @@ public class ControllerTest {
     void testUserCanRegisterWithValidDetails()throws Exception{
         mockMvc.perform(post(REGISTER_URL)
                         .contentType(APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(new RegisterRequest("email@email.com",
+                        .content(objectMapper.writeValueAsString(
+                                new RegisterRequest("email@email.com",
                                 "Password","first","last"))))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print());
@@ -44,13 +45,16 @@ public class ControllerTest {
     void testUserCanRegisterAndLogin()throws Exception{
         mockMvc.perform(post(REGISTER_URL)
                         .contentType(APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(new RegisterRequest("email@email.com",
-                                "Password","first","lasl,t"))))
+                        .content(objectMapper.writeValueAsString(
+                                new RegisterRequest("email@email.com",
+                                "Password","first","laslt"))))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print());
         mockMvc.perform(post(LOGIN_URL)
                         .contentType(APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(new LoginRequest("email@email.com","Password"))))
+                        .content(objectMapper.writeValueAsString(
+                                new LoginRequest("email@email.com",
+                                "Password"))))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print());
     }
@@ -59,22 +63,28 @@ public class ControllerTest {
     void testUserCanPostJobs() throws Exception{
        var result =  mockMvc.perform(post(REGISTER_URL)
                         .contentType(APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(new RegisterRequest("email@email.com",
+                        .content(objectMapper.writeValueAsString(
+                                new RegisterRequest("email@email.com",
                                 "Password","first","last"))))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print())
                 .andReturn();
-       result = mockMvc.perform(post(REGISTER_URL)
+       result = mockMvc.perform(post(LOGIN_URL)
                         .contentType(APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(new LoginRequest("email@email.com","Password"))))
+                        .content(objectMapper.writeValueAsString(
+                                new LoginRequest("email@email.com",
+                                "Password"))))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print())
                 .andReturn();
         String id =  result.getResponse().getContentAsString().substring(26,27);
         mockMvc.perform(post("/api/v1/nodium/users/post-jobs")
-                        .header(AUTHORIZATION, AUTH_HEADER_PREFIX)
+                        .header(AUTHORIZATION, AUTH_HEADER_PREFIX+result.getResponse().
+                                getHeader(AUTHORIZATION).substring(7).strip())
                         .contentType(APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(new JobRequest(new BigInteger(id).longValue(), "location",
+                        .content(objectMapper.writeValueAsString(
+                                new JobRequest(new BigInteger(id).longValue(),
+                                "location",
                                 "description","name",new BigDecimal("9000"),
                                 "REMOTE"))))
                 .andDo(print())
@@ -84,11 +94,15 @@ public class ControllerTest {
     @Test
     @Sql({"/db/truncate.sql"})
     void testProvidersCanRegister()throws Exception {
-        mockMvc.perform(post(REGISTER_URL)
-                .content("{\"email\":\"email@email.com\",\"password\":\"password\",\"firstname\":\"firstname\",\"lastname\":\"lastname\"}")
+       var result =  mockMvc.perform(post(REGISTER_URL)
+                .content("{\"email\":\"email@email.com\"," +
+                        "\"password\":\"password\",\"firstname\":\"firstname\"," +
+                        "\"lastname\":\"lastname\"}")
                         .contentType(APPLICATION_JSON))
-                .andDo(result -> System.out.println(result.getRequest().getHeaderNames()))
+                .andDo(req -> System.out.println(req.getRequest().getHeaderNames()))
                 .andExpect(status().isCreated())
-                .andDo(print());
+                .andDo(print())
+                .andReturn();
+
         }
     }

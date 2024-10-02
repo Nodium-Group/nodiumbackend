@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import nodium.group.backend.data.enums.Role;
 import nodium.group.backend.data.models.User;
+import nodium.group.backend.data.repository.ReviewRepository;
 import nodium.group.backend.data.repository.UserRepository;
 import nodium.group.backend.dto.out.*;
 import nodium.group.backend.dto.request.*;
@@ -27,14 +28,17 @@ public class BackendProviderService implements ProviderService {
     @Autowired
     public BackendProviderService(UserRepository userRepository, ModelMapper modelMapper,
                                   PasswordEncoder encoder, BackendJobService jobService,
-                                  UserService userService, MailService mailService){
+                                  UserService userService, MailService mailService,
+                                  ReviewRepository reviewRepository){
         this.userRepository = userRepository;
         this.modelMapper= modelMapper;
         this.passwordEncoder= encoder;
         this.jobService = jobService;
         this.userService = userService;
         this.mailService = mailService;
+        this.reviewRepository= reviewRepository;
     }
+    private final ReviewRepository reviewRepository;
     private final UserService userService;
     private final JobService jobService;
     private final UserRepository userRepository;
@@ -61,6 +65,12 @@ public class BackendProviderService implements ProviderService {
     public List<?> getAllBookings(Long id) {
         var user = userRepository.findById(id).get();
         return jobService.findAllJobs(user.getEmail());
+    }
+
+    @Override
+    public List<?> getAllReviews(Long id) {
+        var user = userRepository.findById(id).get();
+        return reviewRepository.findAllByReviewee(user);
     }
 
     private void validateMail(String email){
