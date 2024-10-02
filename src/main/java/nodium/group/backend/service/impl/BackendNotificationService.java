@@ -41,9 +41,7 @@ public class BackendNotificationService implements NotificationService {
     private boolean isLocatedInLocation(User user, String location) {
         Address address = user.getAddress();
         String state = address.getState();
-        String lga = address.getLga();
-        return (state != null && state.toLowerCase().contains(location.toLowerCase())) ||
-                (lga != null && lga.toLowerCase().contains(location.toLowerCase()));
+        return (state != null && state.toLowerCase().contains(location.toLowerCase()));
     }
     private void sendNotification(User user, JobRequest jobRequest) {
         Notification notification = new Notification();
